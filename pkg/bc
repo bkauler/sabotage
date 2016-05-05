@@ -1,0 +1,22 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/bc-1.06.95.tar.bz2
+
+[vars]
+filesize=290069
+sha512=16ec13f87ef76ad4de77d378ef8d65a582adca1bf661c9d7675e78d940680c77e81a00a01817fde7c1ad1524562d6f933caa5c42a0686f3f85aadbb39393afb1
+desc="GNU's numeric processing language and a calculator"
+
+[deps]
+
+
+[build]
+#from debian...
+patch -p1 < "$K"/bc-1.06.95-debian28jul2011.patch
+
+CFLAGS="$optcflags" \
+  LDFLAGS="$optldflags" \
+    ./configure --prefix="$butch_prefix" $xconfflags \
+      --enable-shared --disable-static --with-readline
+make -j$MAKE_THREADS || exit 1
+make DESTDIR="$butch_install_dir" install
+
