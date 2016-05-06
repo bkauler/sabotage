@@ -1,0 +1,20 @@
+[build]
+#my pkg/qky-* package recipes have hacks in them to install without the "qky-".
+#for example, qky-e2fsprogs will install as e2fsprogs. However, pkg/stage0 has
+# already installed e2fsprogs. my qky-e2fsprogs will replace it, however,
+# /var/lib/butch.db has an entry appended after src/build/build_<pkg>.sh is executed
+# (done by update_butchdb() in butch-core).
+#qky-fix-butchdb is a fix for butch.db.
+
+AQKY='qky-e2fsprogs'
+
+echo "Fixing ${AQKY} in butch.db"
+NORMNAME="$(echo -n "$AQKY" | cut -f 2- -d '-')"
+#remove entry of pkg if it exists...
+if [ "$(grep "^${NORMNAME} " "$R"/var/lib/butch.db)" != "" ];then
+ sed -i "/^${NORMNAME} /d" "$R"/var/lib/butch.db
+fi
+#now fix the qky-* entry...
+sed -i -e "s%^qky-${NORMNAME} %${NORMNAME} %" "$R"/var/lib/butch.db
+
+exit 0
