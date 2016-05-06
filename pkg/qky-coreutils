@@ -34,18 +34,24 @@ make V=1 -j$MAKE_THREADS || exit 1
 
 #this is a cutdown installation, for quirky linux (need to replace some busybox applets)...
 #make DESTDIR="$butch_install_dir" install
-[ -d "$R"/opt/coreutils-cut ] && rm -rf "$R"/opt/coreutils-cut
-mkdir -p "$R"/opt/coreutils-cut/bin
+[ -d "$R"/opt/coreutils ] && rm -rf "$R"/opt/coreutils
+mkdir -p "$R"/opt/coreutils/bin
 for APROG in cat chmod cksum comm cp cut date dd dirname du expand fold ginstall head install join ln ls md5sum mv od paste pr readlink rm rmdir seq sleep sort split stat tac test touch uname uniq wc
 do
  [ ! -e src/$APROG ] && continue
- busybox cp -a src/$APROG "$R"/opt/coreutils-cut/bin/
+ busybox cp -a src/$APROG "$R"/opt/coreutils/bin/
  #replace busybox applets...
- busybox ln -snf ../opt/coreutils-cut/bin/$APROG "$R"/bin/$APROG
+ busybox ln -snf ../opt/coreutils/bin/$APROG "$R"/bin/$APROG
 done
-[ -f "$R"/opt/coreutils-cut/bin/ginstall ] && [ ! -e "$R"/opt/coreutils-cut/bin/install ] && busybox ln -snf ../opt/coreutils-cut/bin/ginstall "$R"/bin/install
+[ -f "$R"/opt/coreutils/bin/ginstall ] && [ ! -e "$R"/opt/coreutils/bin/install ] && busybox ln -snf ../opt/coreutils/bin/ginstall "$R"/bin/install
 #leave the busybox df in place...
 if [ -f src/df ];then
- busybox cp -a src/df "$R"/opt/coreutils-cut/bin/
- busybox ln -snf ../opt/coreutils-cut/bin/df "$R"/bin/df-FULL
+ busybox cp -a src/df "$R"/opt/coreutils/bin/
+ busybox ln -snf ../opt/coreutils/bin/df "$R"/bin/df-FULL
 fi
+
+#fix install to "coreutils" not "qky-coreutils"...
+OLDbutch_install_dir="$butch_install_dir"
+butch_install_dir="$(echo -n "$butch_install_dir" | sed -e 's%qky-%%')"
+butch_package_name="$(echo -n "$butch_package_name" | sed -e 's%qky-%%')"
+mv -f $OLDbutch_install_dir $butch_install_dir

@@ -12,3 +12,4 @@ qky-util-linux' > "$K"/../pkg/libuuid
 echo '[deps]
 qky-util-linux' > "$K"/../pkg/libblkid
 
+exit 0

@@ -1,11 +1,14 @@
 [deps]
-stage1
+qky-stage1
 qky-customize
 pkgconf
 curses
 qky-coreutils
+qky-fix-coreutils
 qky-util-linux
+qky-fix-util-linux
 qky-e2fsprogs
+qky-fix-e2fsprogs
 libressl
 ca-certificates
 perl

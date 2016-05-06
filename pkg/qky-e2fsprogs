@@ -11,6 +11,16 @@ pkgconf
 kernel-headers
 
 [build]
+#pkg/stage1 has "e2fsprogs". don't want to change this, as it comes from sabotage-linux/sabotage.
+#instead, remove...
+if [ -d "$R"/opt/e2fsprogs ];then
+ rm -rf "$R"/opt/e2fsprogs
+ sed -i '/e2fsprogs/d' "$R"/var/lib/butch.db
+ "$K"/bin/butch-unlink e2fsprogs
+ filelist="$(echo -n "$filelist" | sed -e 's%qky-%%')"
+ [ -f $filelist ] && rm -f $filelist
+fi
+
 [ -n "$CROSS_COMPILE" ] && xconfflags="--host=$($CC -dumpmachine)"
 
 CFLAGS="-D_GNU_SOURCE $optcflags -D__uint64_t=u_int64_t -fPIC" \
@@ -19,7 +29,14 @@ LDFLAGS="$optldflags -static" \
   --sbindir="$butch_prefix"/bin $xconfflags --disable-nls \
   --disable-fsck --disable-uuidd
   
-make V=1 -j$MAKE_THREADS
+make V=1 -j$MAKE_THREADS || exit 1
+
+#fix install to "e2fsprogs" not "qky-e2fsprogs"...
+OLDbutch_install_dir="$butch_install_dir"
+butch_install_dir="$(echo -n "$butch_install_dir" | sed -e 's%qky-%%')"
+butch_package_name="$(echo -n "$butch_package_name" | sed -e 's%qky-%%')"
+mv -f $OLDbutch_install_dir $butch_install_dir
+
 make DESTDIR="$butch_install_dir" install
 
 #some of these should be replaced by symlinks...

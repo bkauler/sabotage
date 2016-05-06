@@ -15,7 +15,7 @@ zlib
 #this is done from years of experience with puppy linux, where the busybox applets
 #were found to be inadequate.
 #this also installs libblkid and libuuid. those in e2fsprogs are disabled, so
-#util-linux-cut must be compiled before e2fsprogs.
+#util-linux must be compiled before e2fsprogs.
 
 patch -p1 < "$K"/util-linux-fix-nls-disabled.patch
 
@@ -36,6 +36,12 @@ LDFLAGS="$optldflags -lcurses -lterminfo" \
   --enable-swapoff --enable-swapon --enable-umount --enable-uuidd --enable-whereis
 
 make -j$MAKE_THREADS || exit 1
+
+#fix install to "coreutils" not "qky-coreutils"...
+OLDbutch_install_dir="$butch_install_dir"
+butch_install_dir="$(echo -n "$butch_install_dir" | sed -e 's%qky-%%')"
+butch_package_name="$(echo -n "$butch_package_name" | sed -e 's%qky-%%')"
+mv -f $OLDbutch_install_dir $butch_install_dir
 
 make DESTDIR="$butch_install_dir" install
 
