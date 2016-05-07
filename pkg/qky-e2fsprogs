@@ -35,7 +35,8 @@ make V=1 -j$MAKE_THREADS || exit 1
 OLDbutch_install_dir="$butch_install_dir"
 butch_install_dir="$(echo -n "$butch_install_dir" | sed -e 's%qky-%%')"
 butch_package_name="$(echo -n "$butch_package_name" | sed -e 's%qky-%%')"
-mv -f $OLDbutch_install_dir $butch_install_dir
+#comment-out, leave /opt/qky-e2fsprogs there, as hacked butch-core creates entries for both qky-e2fsprogs and e2fsprogs...
+#mv -f $OLDbutch_install_dir $butch_install_dir
 
 make DESTDIR="$butch_install_dir" install
 

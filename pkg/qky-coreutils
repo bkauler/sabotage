@@ -54,4 +54,5 @@ fi
 OLDbutch_install_dir="$butch_install_dir"
 butch_install_dir="$(echo -n "$butch_install_dir" | sed -e 's%qky-%%')"
 butch_package_name="$(echo -n "$butch_package_name" | sed -e 's%qky-%%')"
-mv -f $OLDbutch_install_dir $butch_install_dir
+#comment-out, leave /opt/qky-coreutils there, as hacked butch-core creates entries for both qky-coreuils and coreutils...
+#mv -f $OLDbutch_install_dir $butch_install_dir

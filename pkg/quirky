@@ -1,6 +1,6 @@
 [deps]
-qky-stage1
-qky-core
+quirky-stage1
+quirky-core
 
 core
 xorg
