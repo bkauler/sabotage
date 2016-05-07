@@ -16,13 +16,14 @@ busybox
 butch_do_relocate=false
 
 patch -p1 < "$K"/busybox-1.24-guess_fstype-applet.patch
+patch -p1 < "$K"/busybox-1.24-musl.patch
 
 #i suppose this is one way to do it...
 cat > .config <<'EOFMKR'
 #
 # Automatically generated make config: don't edit
 # Busybox version: 1.24.2
-# Sat May  7 00:06:55 2016
+# Sat May  7 20:26:20 2016
 #
 CONFIG_HAVE_DOT_CONFIG=y
 
@@ -34,7 +35,7 @@ CONFIG_HAVE_DOT_CONFIG=y
 # General Configuration
 #
 CONFIG_DESKTOP=y
-CONFIG_EXTRA_COMPAT=y
+# CONFIG_EXTRA_COMPAT is not set
 CONFIG_INCLUDE_SUSv2=y
 # CONFIG_USE_PORTABLE_CODE is not set
 CONFIG_PLATFORM_LINUX=y
@@ -73,7 +74,7 @@ CONFIG_FEATURE_SUID_CONFIG_QUIET=y
 # CONFIG_FEATURE_PREFER_APPLETS is not set
 CONFIG_BUSYBOX_EXEC_PATH="/proc/self/exe"
 CONFIG_FEATURE_SYSLOG=y
-CONFIG_FEATURE_HAVE_RPC=y
+# CONFIG_FEATURE_HAVE_RPC is not set
 
 #
 # Build Options
@@ -87,7 +88,7 @@ CONFIG_STATIC=y
 CONFIG_LFS=y
 CONFIG_CROSS_COMPILER_PREFIX=""
 CONFIG_SYSROOT=""
-CONFIG_EXTRA_CFLAGS=""
+CONFIG_EXTRA_CFLAGS="-D__musl__ -static"
 CONFIG_EXTRA_LDFLAGS=""
 CONFIG_EXTRA_LDLIBS=""
 
@@ -585,7 +586,7 @@ CONFIG_FEATURE_MOUNT_FAKE=y
 CONFIG_FEATURE_MOUNT_VERBOSE=y
 # CONFIG_FEATURE_MOUNT_HELPERS is not set
 CONFIG_FEATURE_MOUNT_LABEL=y
-CONFIG_FEATURE_MOUNT_NFS=y
+# CONFIG_FEATURE_MOUNT_NFS is not set
 CONFIG_FEATURE_MOUNT_CIFS=y
 CONFIG_FEATURE_MOUNT_FLAGS=y
 CONFIG_FEATURE_MOUNT_FSTAB=y
