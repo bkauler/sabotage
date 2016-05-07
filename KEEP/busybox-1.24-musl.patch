@@ -1,0 +1,52 @@
+diff -Naur busybox-1.24.2PREV/include/libbb.h busybox-1.24.2/include/libbb.h
+--- busybox-1.24.2PREV/include/libbb.h	2016-03-18 04:35:49.000000000 +0800
++++ busybox-1.24.2/include/libbb.h	2016-05-07 19:03:35.000000000 +0800
+@@ -42,6 +42,7 @@
+ #include <sys/mman.h>
+ #include <sys/socket.h>
+ #include <sys/stat.h>
++#include <sys/sysinfo.h>
+ #include <sys/time.h>
+ #include <sys/types.h>
+ #ifndef major
+diff -Naur busybox-1.24.2PREV/include/platform.h busybox-1.24.2/include/platform.h
+--- busybox-1.24.2PREV/include/platform.h	2016-03-18 04:35:49.000000000 +0800
++++ busybox-1.24.2/include/platform.h	2016-05-07 19:06:01.000000000 +0800
+@@ -497,6 +497,13 @@
+ # undef HAVE_NET_ETHERNET_H
+ #endif
+ 
++#if defined(__musl__)
++# undef HAVE_SETBIT
++# include <stddef.h>
++# include <termios.h>
++# include <sys/ioctl.h>
++#endif
++
+ /*
+  * Now, define prototypes for all the functions defined in platform.c
+  * These must come after all the HAVE_* macros are defined (or not)
+diff -Naur busybox-1.24.2PREV/miscutils/man.c busybox-1.24.2/miscutils/man.c
+--- busybox-1.24.2PREV/miscutils/man.c	2016-02-11 19:50:37.000000000 +0800
++++ busybox-1.24.2/miscutils/man.c	2016-05-07 19:10:06.000000000 +0800
+@@ -107,7 +107,7 @@
+ 	 * Otherwise it may show just empty screen */
+ 	cmd = xasprintf(
+ 		/* replaced -Tlatin1 with -Tascii for non-UTF8 displays */
+-		man ? "gtbl | nroff -Tascii -mandoc 2>&1 | %s"
++		man ? "nroff -Tutf -man 2>&1 | %s"
+ 		    : "%s",
+ 		pager);
+ 	system(cmd);
+diff -Naur busybox-1.24.2PREV/networking/tcpudp.c busybox-1.24.2/networking/tcpudp.c
+--- busybox-1.24.2PREV/networking/tcpudp.c	2016-02-11 19:50:37.000000000 +0800
++++ busybox-1.24.2/networking/tcpudp.c	2016-05-07 19:14:46.000000000 +0800
+@@ -71,7 +71,7 @@
+ /* Wants <limits.h> etc, thus included after libbb.h: */
+ #ifdef __linux__
+ #include <linux/types.h> /* for __be32 etc */
+-#include <linux/netfilter_ipv4.h>
++//#include <linux/netfilter_ipv4.h>
+ #endif
+ 
+ // TODO: move into this file:
