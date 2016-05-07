@@ -1,0 +1,18 @@
+[mirrors]
+http://downloads.sourceforge.net/project/libusb/libusb-1.0/libusb-1.0.20/libusb-1.0.20.tar.bz2
+
+[vars]
+filesize=795247
+sha512=4230047dbc18db402f399a6b228f70da37ce4f9da9d57203e5c31cf0edec5ddd664865b4f16038a2ae72c26097e713b709b9e882a11b65a274e84993d617c765
+desc="OS independent USB device access"
+
+[deps]
+eudev
+
+[build]
+CFLAGS="$optcflags" LDFLAGS="$optldflags" \
+CPPFLAGS="-D_POSIX_SOURCE -D_BSD_SOURCE -DTIMESPEC_TO_TIMEVAL=" \
+  ./configure -C --prefix="$butch_prefix" $xconfflags \
+  --disable-build-docs
+make -j$MAKE_THREADS
+make V=1 DESTDIR="$butch_install_dir" install

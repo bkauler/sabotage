@@ -1,0 +1,47 @@
+[mirrors]
+http://dev.gentoo.org/~blueness/eudev/eudev-3.1.2.tar.gz
+
+[vars]
+filesize=1858004
+sha512=d9aeb37a163ce4a0c116f75a927b4b99f8445d06624fbb3c28ade18f3effd8c54af5a4a52477c31a0452822a3dc0901468263195256e9dbf79d2ef08cf46f2b6
+
+[deps]
+kernel-headers
+libblkid
+glib
+kmod
+gperf
+
+[build]
+#eudev 3.1.5 is broken (doesn't compile libgudev), use 3.1.2.
+
+CFLAGS="-D_GNU_SOURCE $optcflags" \
+LDFLAGS="$optldflags -lblkid" \
+  ./configure -C --prefix="$butch_prefix" $xconfflags \
+  --with-rootlibdir=/lib --with-firmware-path=/lib/firmware/updates:/lib/firmware \
+  --enable-introspection=no --disable-selinux --with-rootprefix= --disable-gtk-doc \
+  --disable-manpages --disable-keymap --with-modprobe=/sbin/modprobe \
+  --enable-modules \
+  --enable-split-usr --exec-prefix= --enable-hwdb --enable-kmod --enable-rule-generator
+
+make -j$MAKE_THREADS V=1
+
+#fix install to "eudev" not "qky-eudev"...
+OLDbutch_install_dir="$butch_install_dir"
+butch_install_dir="$(echo -n "$butch_install_dir" | sed -e 's%qky-%%')"
+butch_package_name="$(echo -n "$butch_package_name" | sed -e 's%qky-%%')"
+#comment-out, leave /opt/qky-eudev there, as hacked butch-core creates entries for both qky-eudev and eudev...
+#mv -f $OLDbutch_install_dir $butch_install_dir
+
+make DESTDIR="$butch_install_dir" install
+
+#install fixes...
+if [ -d "$R"/opt/eudev/share/pkgconfig ];then
+ mkdir -p "$R"/opt/eudev/lib/pkgconfig
+ cp -a -f "$R"/opt/eudev/share/pkgconfig/* "$R"/opt/eudev/lib/pkgconfig/
+ rm -rf "$R"/opt/eudev/share/pkgconfig
+fi
+if [ -h "$R"/opt/eudev/sbin/udevadm ];then
+ ln -snf ../bin/udevadm "$R"/opt/eudev/sbin/udevadm
+fi
+

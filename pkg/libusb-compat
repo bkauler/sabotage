@@ -1,0 +1,18 @@
+[mirrors]
+http://downloads.sourceforge.net/project/libusb/libusb-compat-0.1/libusb-compat-0.1.5/libusb-compat-0.1.5.tar.bz2
+
+[vars]
+filesize=276769
+sha512=fe63bd1c65e67588a83ebfdd329025ecf75f33f877fb80dd83eb528df057efb591e010416027f9054294504562299166e8e2811a7681fa1967a03baae9b88857
+
+[deps]
+libusb
+
+[build]
+CFLAGS="$optcflags" LDFLAGS="$optldflags" \
+CPPFLAGS="-D_POSIX_SOURCE -D_BSD_SOURCE -DTIMESPEC_TO_TIMEVAL=" \
+  ./configure -C --prefix="$butch_prefix" $xconfflags \
+  --disable-build-docs
+make -j$MAKE_THREADS
+make V=1 DESTDIR="$butch_install_dir" install
+
