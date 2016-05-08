@@ -1,0 +1,27 @@
+[mirrors]
+http://ftp.gnu.org/gnu/ncurses/ncurses-6.0.tar.gz
+
+[vars]
+filesize=3131891
+sha512=9ec194f4783dae6de8c529cac31b5cfbfcfea212c5d47b1f87cd49df013e38f8580a9e7aa1384918df0921b4ba999d5e73eb6d6362cce2d7287e64308b673963
+desc="The ncurses (new curses) library"
+
+[deps]
+
+
+[build]
+
+CFLAGS="$optcflags" LDFLAGS="$optldflags" \
+  ./configure --prefix="$butch_prefix" $xconfflags \
+  --without-ada --without-cxx --without-manpages --without-tests \
+  --enable-pc-files --with-shared --without-debug --without-libtool \
+  --enable-symlinks --enable-widec --enable-ext-colors \
+  --enable-sigwinch --enable-hard-tabs --enable-colorfgbg
+
+make -j$MAKE_THREADS || exit 1
+
+butch_install_dir="$(echo -n "$butch_install_dir" | sed -e 's%qky-%%')"
+butch_package_name="$(echo -n "$butch_package_name" | sed -e 's%qky-%%')"
+
+make V=1 DESTDIR="$butch_install_dir" install
+
