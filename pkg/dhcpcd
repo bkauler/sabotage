@@ -1,0 +1,103 @@
+[mirrors]
+http://roy.marples.name/downloads/dhcpcd/dhcpcd-6.10.3.tar.xz
+
+[vars]
+filesize=185520
+sha512=6ebcb720909f4d167d064d5e8ed961c331470762e89f4e5c145f048424ef170ffc218e9a9dcc94e3a8dce6ccc147710ec2ef17627a708918203858f3dcdca43d
+desc="Dynamic Host Configuration Protocol (DHCP) Client Daemon"
+
+[deps]
+
+
+[build]
+#include/sys/cdefs.h is in glibc, not in musl. a compat. header is available here:
+# https://github.com/JuliaLang/openlibm/blob/master/src/cdefs-compat.h
+#sticking it in here (so avail for later pkgs):
+mkdir -p "$R"/include/sys
+cat> "${R}"/include/sys/cdefs.h <<'EOFMKR'
+#ifndef _CDEFS_COMPAT_H_
+#define	_CDEFS_COMPAT_H_
+
+#if defined(__cplusplus)
+#define	__BEGIN_DECLS	extern "C" {
+#define	__END_DECLS	}
+#else
+#define	__BEGIN_DECLS
+#define	__END_DECLS
+#endif
+
+#ifdef __GNUC__
+#ifndef __strong_reference
+#ifdef __APPLE__
+#define __strong_reference(sym,aliassym) __weak_reference(sym,aliassym)
+#else
+#define __strong_reference(sym,aliassym)	\
+	OLM_DLLEXPORT extern __typeof (sym) aliassym __attribute__ ((__alias__ (#sym)));
+#endif /* __APPLE__ */
+#endif /* __strong_reference */
+
+#ifndef __weak_reference
+#ifdef __ELF__
+#ifdef __STDC__
+#define	__weak_reference(sym,alias)	\
+	__asm__(".weak " #alias);	\
+	__asm__(".equ "  #alias ", " #sym)
+#define	__warn_references(sym,msg)	\
+	__asm__(".section .gnu.warning." #sym);	\
+	__asm__(".asciz \"" msg "\"");	\
+	__asm__(".previous")
+#else
+#define	__weak_reference(sym,alias)	\
+	__asm__(".weak alias");		\
+	__asm__(".equ alias, sym")
+#define	__warn_references(sym,msg)	\
+	__asm__(".section .gnu.warning.sym"); \
+	__asm__(".asciz \"msg\"");	\
+	__asm__(".previous")
+#endif	/* __STDC__ */
+#elif defined(__clang__) /* CLANG */
+#ifdef __STDC__
+#define __weak_reference(sym,alias)     \
+    __asm__(".weak_reference " #alias); \
+    __asm__(".set " #alias ", " #sym)
+#else
+#define __weak_reference(sym,alias)     \
+    __asm__(".weak_reference alias");\
+    __asm__(".set alias, sym")
+#endif
+#else	/* !__ELF__ */
+#ifdef __STDC__
+#define __weak_reference(sym,alias)	\
+	__asm__(".stabs \"_" #alias "\",11,0,0,0");	\
+	__asm__(".stabs \"_" #sym "\",1,0,0,0")
+#define __warn_references(sym,msg)	\
+	__asm__(".stabs \"" msg "\",30,0,0,0");		\
+	__asm__(".stabs \"_" #sym "\",1,0,0,0")
+#else
+#define __weak_reference(sym,alias)	\
+	__asm__(".stabs \"_/**/alias\",11,0,0,0");	\
+	__asm__(".stabs \"_/**/sym\",1,0,0,0")
+#define __warn_references(sym,msg)	\
+	__asm__(".stabs msg,30,0,0,0");			\
+	__asm__(".stabs \"_/**/sym\",1,0,0,0")
+#endif	/* __STDC__ */
+#endif	/* __ELF__ */
+#endif  /* __weak_reference */
+#endif	/* __GNUC__ */
+
+
+#endif /* _CDEFS_COMPAT_H_ */
+EOFMKR
+
+CFLAGS="$optcflags" LDFLAGS="$optldflags" \
+  ./configure -C --prefix="$butch_prefix" $xconfflags \
+  --libexecdir="$butch_prefix"/lib/dhcpcd
+
+make -j$MAKE_THREADS || exit 1
+
+make V=1 DESTDIR="$butch_install_dir" install
+
+mv -f "$R"/opt/dhcpcd/usr/share "$R"/opt/dhcpcd/share
+rm -rf "$R"/opt/dhcpcd/usr
+mkdir -p "$R"/var/lib/dhcpcd
+

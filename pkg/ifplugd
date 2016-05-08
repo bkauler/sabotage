@@ -1,0 +1,27 @@
+[mirrors]
+http://0pointer.de/lennart/projects/ifplugd/ifplugd-0.28.tar.gz
+
+[vars]
+filesize=142677
+sha512=c606e456f81f224eba9f8912e11fb76b759c160313d1db3c9035775b8c1ca57ca10c88dfb33318ba02f5c025218a377ca78ee160fc3d9a31ac6e95b92f340d4f
+desc="A daemon to automatically configure a ethernet device on state change"
+
+[deps]
+libdaemon
+
+
+[build]
+#from T2...
+patch -p1 < "$K"/ifplugd-0.28-fix-header.patch
+patch -p1 < "$K"/ifplugd-0.28-no-init.patch
+patch -p1 < "$K"/ifplugd-0.28-unsigned-types.patch
+
+CFLAGS="$optcflags" LDFLAGS="$optldflags" \
+  ./configure --prefix="$butch_prefix" $xconfflags \
+  --disable-lynx --disable-xmltoman --with-initdir=/etc/ifplugd  --disable-subversion
+
+make -j$MAKE_THREADS || exit 1
+
+make V=1 DESTDIR="$butch_install_dir" install
+
+

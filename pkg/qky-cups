@@ -1,0 +1,59 @@
+[mirrors]
+https://github.com/apple/cups/releases/download/release-2.1.3/cups-2.1.3-source.tar.bz2
+
+[vars]
+filesize=8832400
+sha512=5cc715b8521b4d6af29a97a8abf7a1b0973840c00727ee8e7926e89a4a9da8e67565d14cc4b57ab7cfb40b238d4faaed7608b9ab95947cc3671ed87b710f8f36
+tardir=cups-2.1.3
+
+[deps]
+libjpeg
+libtiff
+libpng
+gzip
+libressl
+attr
+
+[build]
+patch -p1 < "$K"/cups-1.7.0-blfs-1.patch
+[ -n "$CROSS_COMPILE" ] && \
+  xconfflags="--host=$($CC -dumpmachine|sed 's/musl/gnu/') \
+  --with-sysroot=$butch_root_dir"
+
+CFLAGS="-D_GNU_SOURCE $optcflags" \
+LDFLAGS="$optldflags -Wl,-rpath-link=$butch_root_dir$butch_prefix/lib -liconv" \
+  ./configure -C --prefix="$butch_prefix" $xconfflags \
+  --disable-static \
+  --disable-avahi \
+  --disable-tcp-wrappers \
+  --disable-gssapi \
+  --disable-pam \
+  --disable-dbus \
+  --without-java \
+  --without-python \
+  --without-php \
+  --disable-gnutls \
+  --disable-openssl \
+  --disable-cdsassl \
+  --disable-dbus \
+  --disable-ssl \
+  --with-components=all \
+  --with-icondir="$butch_prefix"/share/icons \
+  --with-menudir="$butch_prefix"/share/applications \
+  --with-rcdir="$butch_prefix"/share/cups-rc.d \
+  --disable-libusb --with-logdir=/var/cups/log --disable-systemd \
+  --enable-shared --enable-webif --with-printcap=/etc/printcap --with-perl
+
+sed -i 's/-fstack-protector//' Makedefs
+
+make -j$MAKE_THREADS || exit 1
+
+butch_install_dir="$(echo -n "$butch_install_dir" | sed -e 's%qky-%%')"
+butch_package_name="$(echo -n "$butch_package_name" | sed -e 's%qky-%%')"
+
+make DSTROOT="$butch_install_dir" install
+
+# TODO
+# - write init scripts derived from /share/cups-rc.d/*
+# install users, groups etc - see
+# http://www.linuxfromscratch.org/blfs/view/7.4/pst/cups.html

@@ -1,0 +1,25 @@
+[mirrors]
+http://0pointer.de/lennart/projects/ifplugd/ifplugd-0.18.tar.gz
+
+[vars]
+filesize=127456
+sha512=70eefaf9a3f34e4cb3b8ad60962436b3cd27062427882c24d0d9beb46b2310dcb9239412cdaae3e4f3f47d2f491fa028c9290a98489db71ac5b9b8d9a7c9c5df
+desc="Detect active ethernet. install 'ifstatus' only. old version."
+
+[deps]
+
+
+[build]
+#note, does not need libdaemon.
+
+patch -p1 < "$K"/ifplugd-0.28-unsigned-types.patch
+
+CFLAGS="$optcflags" LDFLAGS="$optldflags" \
+  ./configure --prefix="$butch_prefix" $xconfflags \
+  --disable-lynx --disable-xmltoman --disable-subversion
+
+make -j$MAKE_THREADS || exit 1
+
+#make V=1 DESTDIR="$butch_install_dir" install
+mkdir -p "$R"/opt/ifplugd-old/sbin
+cp -a -f src/ifstatus "$R"/opt/ifplugd-old/sbin/ifplugstatus-0.18
