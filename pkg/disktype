@@ -1,0 +1,25 @@
+[mirrors]
+http://prdownloads.sourceforge.net/disktype/disktype-9.tar.gz
+
+[vars]
+filesize=43809
+sha512sum=3642e35af55341db089d3b671ddecb026eca67a9f63ba55456a0c63c3fa611e3888104e5c14c18959435577a08d1fd93f1794fbb37e0d8118ab9be65f474bdf3
+desc="Disk type identification utility"
+
+[deps]
+
+
+[build]
+#note, still don't have a patch for f2fs!
+#note, do not use the ext4 patch on official disktype site, broken.
+patch -p1 < "$K"/disktype-9-pardus-ext4.patch
+patch -p1 < "$K"/disktype-9-kamwoods-exfat.patch
+
+sed -i -e "s%^CFLAGS .*%CFLAGS = ${optcflags}%" Makefile
+sed -i -e "s%^LDFLAGS .*%LDFLAGS = ${optldflags}%" Makefile
+
+make || exit 1
+
+mkdir -p $butch_install_dir/sbin
+install -m755 -s disktype $butch_install_dir/sbin
+
