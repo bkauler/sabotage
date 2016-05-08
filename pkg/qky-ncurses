@@ -10,13 +10,16 @@ desc="The ncurses (new curses) library"
 
 
 [build]
+#see how this goes. have compiled 'curses' in 'quirky-core', compiling 'qky-ncurses'
+# later in 'quirky-cli'. reason, want proper wide-char libs.
 
 CFLAGS="$optcflags" LDFLAGS="$optldflags" \
   ./configure --prefix="$butch_prefix" $xconfflags \
   --without-ada --without-cxx --without-manpages --without-tests \
   --enable-pc-files --with-shared --without-debug --without-libtool \
   --enable-symlinks --enable-widec --enable-ext-colors \
-  --enable-sigwinch --enable-hard-tabs --enable-colorfgbg
+  --enable-sigwinch --enable-hard-tabs --enable-colorfgbg \
+  --with-termlib --with-normal
 
 make -j$MAKE_THREADS || exit 1
 
