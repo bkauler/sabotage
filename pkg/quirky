@@ -1,6 +1,7 @@
 [deps]
 quirky-stage1
 quirky-core
+quirky-cli
 
 core
 xorg
