@@ -1,0 +1,37 @@
+[vars]
+filesize=287052
+sha512=ab1ad36467ff79ff5ab0b924620001612cae44def58c05ade01a4e58d8a4d48df61c09faba49a20497b7d6314045bbaf137b51a9f4e6b65ed0ea3bb339bf1c45
+
+[mirrors]
+http://ftp.kernel.org/pub/linux/utils/usb/usbutils/usbutils-008.tar.xz
+
+[deps.host]
+dynamic-toolchain
+
+[deps]
+libusb
+libiconv
+
+[build]
+[ -n "$CROSS_COMPILE" ] && \
+  xconfflags="--host=$($CC -dumpmachine|sed 's/musl/gnu/') \
+  --with-sysroot=$butch_root_dir"
+
+CFLAGS="$optcflags -liconv" \
+LDFLAGS="$optldflags -liconv" \
+  ./configure --prefix="$butch_prefix" $xconfflags \
+  --sbindir="$butch_prefix"/bin
+make -j$MAKE_THREADS
+
+butch_install_dir="$(echo -n "$butch_install_dir" | sed -e 's%qky-%%')"
+butch_package_name="$(echo -n "$butch_package_name" | sed -e 's%qky-%%')"
+
+make DESTDIR="$butch_install_dir" install
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p "$dest"/lib/pkgconfig
+mv "$dest"/share/pkgconfig/* "$dest"/lib/pkgconfig/
+rm -rf "$dest"/share/pkgconfig
+
+mkdir -p "$dest"/share
+wget http://www.linux-usb.org/usb.ids -O "$dest"/share/usb.ids
+[ -f "$dest"/share/usb.ids.gz ] && rm -f "$dest"/share/usb.ids.gz
