@@ -48,5 +48,10 @@ libiconv' > "$K"/../pkg/iconv
 #ncurses' > "$K"/../pkg/curses
 #...no, i am going to have both pkgs, qky-ncurses and curses.
 
+#20160509 
+#i have libusb (and libusb-compat). libusbx is a defunct project
+echo '[deps]
+libusb' > "$K"/../pkg/libusbx
+
 
 exit 0
