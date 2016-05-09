@@ -1,0 +1,21 @@
+[mirrors]
+http://downloads.sourceforge.net/project/cdrtools/alpha/cdrtools-3.02a06.tar.gz
+
+[vars]
+filesize=2694917
+sha512=aeedde445417435456dff2cf0276df98434446ea4da431dd77aaf27715c1a3fe2b21f042cbe21853a553a31ee0345bcd6ba0d41898440b54d1ead84c44552127
+desc="A command-line CD/DVD recording program"
+tardir=cdrtools-3.02
+
+[deps]
+
+
+[build]
+
+#hack:
+echo 'bin:x:11:root' >> "$R"/etc/group
+
+CFLAGS="$optcflags" LDFLAGS="$optldflags" make || exit 1
+
+make INS_BASE="$butch_install_dir" install
+

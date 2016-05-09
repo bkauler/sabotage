@@ -1,0 +1,22 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/metamail-2.7.tar.bz2
+
+[vars]
+filesize=128437
+sha512=647ac2c7240fe11fb229496e0a2afa1b3dffd929a70e4350308cbe6c3e90df1bbf6a11a4ecbc1d90fc3fc34fea05d45468ad45a3abe770fa158dedce69e1a13f
+desc="Metamail is a program developed at Bellcore that decodes MIME encoded mail"
+
+[deps]
+
+
+[build]
+#WON'T COMPILE, WANTS sgtty.h FROM glibc
+#from T2...
+patch -p1 < "$K"/metamail-1-2.7-54.patch
+patch -p1 < "$K"/metamail-2-automake.patch
+patch -p1 < "$K"/metamail-3-uue-getline.patch
+
+
+LDFLAGS="$optldflags" make -j1 || exit 1
+
+make DESTDIR="$butch_install_dir" install
