@@ -2,10 +2,11 @@
 quirky-stage1
 quirky-core
 quirky-cli
+quirky-desktop
 
-core
+gc
+gsl
 xorg
-pkg
 libtool
 xclip
 xprop
@@ -85,3 +86,24 @@ sylpheed
 geany
 firefox
 inkscape
+
+[build]
+#Quirky Linux is a fork of Puppy Linux. Quirky and Puppy use a build system named Woof*,
+#that can build the distro from the binary packages of any other distro, including
+#its own native .pet binary package format.
+#The packages built by Sabotage can also be imported into Woof*, though I (BK) am
+#also intending for a merge of the core concepts of Sabotage, such as the directory
+#hierarchy and butch, into a new type of Quirky.
+#
+#bkauler/sabotage at github is the repository for this "Sabotaged Quirky" project
+#(yeah, that can be the codename, or just "SQ"), which is a fork of sabotage-linux/sabotage.
+#To all bkauler to be always able to pull from sabotage-linux, all of the Quirky-specific
+# stuff is kept separate. You will see pkg/qky-* and pkg/quirky-* recipes in bkauler
+#repo. At build-time on a local clone of bkauler repo on a PC, done by running
+#"./build-stage0" (after setting up file 'config') followed by "./enter-chroot",
+#the recipes are executed. This is done by running "butch install quirky-stage1"
+#then: quirky-core, quirky-cli, quirky-desktop. Or just run 'quirky' (the recipe
+#you are looking at now) and it will run all the others.
+#In pkg/quirky-core, there is a package 'quirky-customize', and this is the key
+#recipe, it merges all the qky-* Quirky-specific recipes. For example, qky-e2fsprogs
+#will replace pkg/e2fsprogs.

@@ -59,10 +59,6 @@ sed -ri 's,__uint([0-9]+)_t,uint\1_t,g' efi/wrapper.h
 
 PREFIXED_PATHS="BINDIR='/bin' LIBDIR='/lib' DATADIR='/share' MANDIR='/man' INCDIR='/include'"
 
-#fix install to "syslinux6" not "qky-syslinux6"...
-butch_install_dir="$(echo -n "$butch_install_dir" | sed -e 's%qky-%%')"
-butch_package_name="$(echo -n "$butch_package_name" | sed -e 's%qky-%%')"
-
 make $PREFIXED_PATHS AUXDIR="$butch_prefix/lib/syslinux/bios" INSTALLROOT="$butch_install_dir" bios installer
 make $PREFIXED_PATHS AUXDIR="$butch_prefix/lib/syslinux/bios" INSTALLROOT="$butch_install_dir" -j1 bios install
 

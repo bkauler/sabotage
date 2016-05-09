@@ -50,9 +50,3 @@ if [ -f src/df ];then
  busybox ln -snf ../opt/coreutils/bin/df "$R"/bin/df-FULL
 fi
 
-#fix install to "coreutils" not "qky-coreutils"...
-OLDbutch_install_dir="$butch_install_dir"
-butch_install_dir="$(echo -n "$butch_install_dir" | sed -e 's%qky-%%')"
-butch_package_name="$(echo -n "$butch_package_name" | sed -e 's%qky-%%')"
-#comment-out, leave /opt/qky-coreutils there, as hacked butch-core creates entries for both qky-coreuils and coreutils...
-#mv -f $OLDbutch_install_dir $butch_install_dir

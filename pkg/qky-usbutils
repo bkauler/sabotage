@@ -23,9 +23,6 @@ LDFLAGS="$optldflags -liconv" \
   --sbindir="$butch_prefix"/bin
 make -j$MAKE_THREADS
 
-butch_install_dir="$(echo -n "$butch_install_dir" | sed -e 's%qky-%%')"
-butch_package_name="$(echo -n "$butch_package_name" | sed -e 's%qky-%%')"
-
 make DESTDIR="$butch_install_dir" install
 dest="$butch_install_dir""$butch_prefix"
 mkdir -p "$dest"/lib/pkgconfig

@@ -23,8 +23,5 @@ CFLAGS="$optcflags" LDFLAGS="$optldflags" \
 
 make -j$MAKE_THREADS || exit 1
 
-butch_install_dir="$(echo -n "$butch_install_dir" | sed -e 's%qky-%%')"
-butch_package_name="$(echo -n "$butch_package_name" | sed -e 's%qky-%%')"
-
 make V=1 DESTDIR="$butch_install_dir" install
 

@@ -36,13 +36,6 @@ LDFLAGS="$optldflags -lcurses -lterminfo" \
 
 make -j$MAKE_THREADS || exit 1
 
-#fix install to "util-linux" not "qky-util-linux"...
-OLDbutch_install_dir="$butch_install_dir"
-butch_install_dir="$(echo -n "$butch_install_dir" | sed -e 's%qky-%%')"
-butch_package_name="$(echo -n "$butch_package_name" | sed -e 's%qky-%%')"
-#comment-out, leave /opt/qky-util-linux there, as hacked butch-core creates entries for both qky-util-linux and util-linux...
-#mv -f $OLDbutch_install_dir $butch_install_dir
-
 make DESTDIR="$butch_install_dir" install
 
 mv -f ${butch_install_dir}/bin/mount ${butch_install_dir}/bin/mount-FULL

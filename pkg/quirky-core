@@ -1,12 +1,11 @@
 [deps]
-quirky-stage1
 quirky-customize
 libatomic-ops
 pkgconf
 curses
-qky-coreutils
-qky-util-linux
-qky-e2fsprogs
+coreutils
+util-linux
+e2fsprogs
 libressl
 ca-certificates
 perl

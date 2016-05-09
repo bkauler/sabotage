@@ -26,13 +26,6 @@ LDFLAGS="$optldflags -lblkid" \
 
 make -j$MAKE_THREADS V=1
 
-#fix install to "eudev" not "qky-eudev"...
-OLDbutch_install_dir="$butch_install_dir"
-butch_install_dir="$(echo -n "$butch_install_dir" | sed -e 's%qky-%%')"
-butch_package_name="$(echo -n "$butch_package_name" | sed -e 's%qky-%%')"
-#comment-out, leave /opt/qky-eudev there, as hacked butch-core creates entries for both qky-eudev and eudev...
-#mv -f $OLDbutch_install_dir $butch_install_dir
-
 make DESTDIR="$butch_install_dir" install
 
 #install fixes...

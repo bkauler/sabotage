@@ -1,5 +1,4 @@
 [deps]
-quirky-cli
 
 pixman
 util-macros
@@ -11,7 +10,6 @@ kbproto
 inputproto
 xf86bigfontproto
 libx11
-xextproto
 libxext
 ghostscript
 ijs
@@ -21,3 +19,4 @@ qpdf
 cups-filters
 Xgutenprint
 Xfoomatic-filters
+giflib

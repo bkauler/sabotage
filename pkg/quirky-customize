@@ -5,48 +5,26 @@
 #conflict with main repo, are kept separate. This includes alternative
 #recipes named with "qky-" prefix, for example "pkg/qky-e2fsprogs".
 
+#20160509
+#a better way to handle my qky-* pkgs
+QKYPKGS="$(find "$K"/../pkg -maxdepth 1 -type f -name 'qky-*' | rev | cut -f 1 -d '/' | rev | tr '\n' ' ')"
+for AQKY in $QKYPKGS
+do
+ ANAME="$(echo -n "$AQKY" | cut -f 2- -d '-')"
+ mv -f "$K"/../pkg/${AQKY} "$K"/../pkg/${ANAME} #ex: qky-e2fsprogs to e2fsprogs
+done
+
 #as quirky is building libblkid and libuuid in util-linux (actually qky-util-linux),
 #need to modify pkg/libuuid and pkg/libblkid, but have to do this at build-time...
 echo '[deps]
-qky-util-linux' > "$K"/../pkg/libuuid
+util-linux' > "$K"/../pkg/libuuid
 echo '[deps]
-qky-util-linux' > "$K"/../pkg/libblkid
-
-#20160507
-#my alternative pkgs all have "qky-" prefix, ex 'qky-util-linux' installs as
-# 'util-linux', need this for butch-core.
-#this patch creates two entries in butch.db, ex 'qky-util-linux' and 'util-linux'...
-sed -i -e 's%mv $BUTCHDB.tmp $BUTCHDB%Xpkg=`echo -n $1 | sed -e 's/^qky-//'`\nsed -i '/^$Xpkg /d' $BUTCHDB\ntail -n 1 $BUTCHDB.tmp > tempxxx\ngrep "^qky-" tempxxx > tempzzz\nsed -e "s/^qky-//" tempzzz >> $BUTCHDB.tmp\nsed -i "/^$/d" $BUTCHDB.tmp\nmv -f $BUTCHDB.tmp $BUTCHDB\nrm -f tempxxx\nrm -f tempzzz%' "$R"/opt/butch/bin/butch-core
-
-#this is what the substitution will look like:
-# tail -n 1 $BUTCHDB.tmp > tempxxx
-# grep "^qky-" tempxxx > tempzzz
-# sed -e "s/^qky-//" tempzzz >> $BUTCHDB.tmp
-# sed -i "/^$/d" $BUTCHDB.tmp
-# mv -f $BUTCHDB.tmp $BUTCHDB
-# rm -f tempxxx
-# rm -f tempzzz
-
-#in some cases, there is an earlier installation, ex e2fsprogs, later installing qky-e2fsprogs,
-#want to remove that earlier line...
-# Xpkg=`echo -n $1 | sed -e 's/^qky-//'`
-# sed -i '/^$Xpkg /d' $BUTCHDB
-# tail -n 1 $BUTCHDB.tmp > tempxxx
-# grep "^qky-" tempxxx > tempzzz
-# sed -e "s/^qky-//" tempzzz >> $BUTCHDB.tmp
-# sed -i "/^$/d" $BUTCHDB.tmp
-# mv -f $BUTCHDB.tmp $BUTCHDB
-# rm -f tempxxx
-# rm -f tempzzz
+util-linux' > "$K"/../pkg/libblkid
 
 #20160508
 #i have 'libiconv', sabotage already has 'iconv'. take care for any recipe with 'iconv' dep...
 echo '[deps]
 libiconv' > "$K"/../pkg/iconv
-##i have 'qky-ncurses' (coz 'ncurses' is broken). need fix deps...
-#echo '[deps]
-#ncurses' > "$K"/../pkg/curses
-#...no, i am going to have both pkgs, qky-ncurses and curses.
 
 #20160509 
 #i have libusb (and libusb-compat). libusbx is a defunct project
