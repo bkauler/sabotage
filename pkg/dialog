@@ -7,12 +7,12 @@ sha512=77ad7698c8acc9ec2c4a8e76d73972ed3ee8d323cdb8cb18fbe496ebe4a6c8be873e0e2ec
 desc="A utility for creating text-mode dialog boxes"
 
 [deps]
-ncurses
+curses
 
 [build]
-CFLAGS="$optcflags" LDFLAGS="$optldflags" \
+CFLAGS="$optcflags" LDFLAGS="$optldflags -lcurses -lterminfo" \
   ./configure --prefix="$butch_prefix" $xconfflags \
-  --enable-nls --with-ncursesw --enable-widec
+  --enable-nls --enable-widec
 
 make -j$MAKE_THREADS || exit 1
 
