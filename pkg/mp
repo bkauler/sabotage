@@ -1,0 +1,20 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/mp-3.2.13.tar.bz2
+
+[vars]
+filesize=149398
+sha512=1b5b97a008c409a8e81e3685e2e937bd7238a4e93150c1b4f82561f6abb825a5b72efdc1aa698e8f73c9a615bd161ccd13537b53c81da379b4ea1a3f2ee22dac
+desc="Text editor with syntax highlighting. Compiling console mode only"
+
+[deps]
+curses
+
+[build]
+
+sed -i -e 's%^CURSES=.*%CURSES=curses%' makefile
+
+LDFLAGS="$optldflags -lterminfo" make mp || exit 1
+
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p $dest/bin
+install -m755 -s mp $dest/bin

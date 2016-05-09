@@ -1,0 +1,23 @@
+[mirrors]
+http://downloads.sourceforge.net/project/mirdir/mirdir/2.1/mirdir-2.1-Unix.tar.gz
+
+[vars]
+filesize=74002
+sha512=d99cbc04a5d99a739c16fea9198d92cd0209fb5fd4fc931eb2af2bb6c0c0ddcec3c34a27269bf108d7ffebcf760c9817088ea2091abbe9d3c4e932724e85c680
+desc="Compare two directory trees, copy differences"
+tardir=mirdir-2.1-UNIX
+
+[deps]
+
+
+[build]
+
+CFLAGS="-D_GNU_SOURCE $optcflags" \
+LDFLAGS="$optldflags" \
+  ./configure -C --prefix="$butch_prefix" $xconfflags
+
+make -j$MAKE_THREADS V=1 || exit 1
+
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p $dest/bin
+install -m755 -s bin/mirdir $dest/bin

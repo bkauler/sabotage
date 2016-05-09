@@ -1,0 +1,20 @@
+[mirrors]
+http://downloads.sourceforge.net/project/mingetty/mingetty/1.08/mingetty-1.08.tar.gz
+
+[vars]
+filesize=13476
+sha512=d2c050a412af81d4635cbaa5610dfa2cf2addce0d3116fa53f73eb15cd6b53d476165a0509ae630a151de07a5bdc82cba1b5da0ab78d0313b200adece3c8872b
+desc="A very small getty for Linux"
+
+[deps]
+
+
+[build]
+
+#sed -i -e "s%^DESTDIR=.*%DESTDIR=${butch_install_dir}%" Makefile
+
+make || exit 1
+
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p $dest/sbin
+install -m 0755 mingetty $dest/sbin

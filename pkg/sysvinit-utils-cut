@@ -1,0 +1,22 @@
+[mirrors]
+http://nongnu.uib.no/sysvinit/sysvinit-2.88dsf.tar.bz2
+
+[vars]
+filesize=105551
+sha512=0bd8eeb124e84fdfa8e621b05f796804ee69a9076b65f5115826bfa814ac1d5d28d31a5c22ebe77c86a93b2288edf4891adc0afaecc4de656c4ecda8a83807bf
+desc="Only the 'last' utility from the sysvinit package. Required by Puppy Linux."
+
+[deps]
+
+
+[build]
+cd src
+cc -ansi -O2 -fomit-frame-pointer -W -Wall -D_GNU_SOURCE -c -o last.o last.c
+cc last.o oldutmp.h -o last || exit 1
+
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p $dest/bin
+install -m755 -s last $dest/bin
+cd ..
+
+
