@@ -1,0 +1,18 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/xdelta30p.tar.bz2
+
+[vars]
+filesize=147036
+sha512=91ea3beb5ced9164fd5da036a80dea57cab50c65f119a7dd4779ce62f53ada49998bdd3e0dbe79ea49a512096894072c96634e121c6a1da8a71821f7526f7f55
+desc="Xdelta is a tool and library for differential compression"
+tardir=xdelta30p
+
+[deps]
+
+
+[build]
+CFLAGS="-D_GNU_SOURCE $optcflags" LDFLAGS="$optldflags" make -j1 xdelta3 || exit 1
+
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p "$dest"/bin
+cp -a -f xdelta3 "$dest"/bin/
