@@ -1,0 +1,7 @@
+[deps]
+kernel
+
+
+[build]
+#note, aufs-utils is kernel-version-sensitive.
+#took out aufs-utils, as build broken.
