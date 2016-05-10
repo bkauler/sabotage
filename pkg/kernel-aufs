@@ -1,0 +1,50 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/alphabetical/a/aufs4-4.4-20160413.tar.gz
+
+[vars]
+filesize=1382928
+sha512=25330737e51d408a85e23d2fea8fe79114f375b2142e7617653c56789915770cb00cf6b9a13895e56825d4ac8f94e337902a42548bb10f594c468c305ff610d4
+desc="Kernel module for Aufs layered filesystem"
+
+[deps]
+
+
+[build]
+#extract the patches. Later, 'kernel' recipe will apply them.
+#note, got the source from here: git clone git://github.com/sfjro/aufs4-standalone.git aufs4
+# cd aufs4
+# git branch -a
+# git checkout origin/aufs4.4
+
+#dest="$butch_install_dir""$butch_prefix"
+#no, hard-code it...
+dest="$R"/opt/kernel-aufs
+mkdir -p "$R"/opt/kernel-aufs
+
+cp -f aufs4-base.patch "$dest"/
+cp -f aufs4-kbuild.patch "$dest"/
+cp -f aufs4-standalone.patch "$dest"/
+cp -f aufs4-mmap.patch "$dest"/
+
+cp -a -f fs "$dest"/
+cp -a -f Documentation "$dest"/
+cp -f include/uapi/linux/aufs_type.h "$dest"/
+
+cat> "$dest"/aufs-allow-sfs.patch <<'EOFMKR'
+diff -rupN aufs2.1-32-git100511-orig//fs/aufs/loop.c aufs2.1-32-git100511/fs/aufs/loop.c
+--- aufs2.1-32-git100511-orig/fs/aufs/loop.c	2011-05-11 11:27:21.922000014 +0200
++++ aufs2.1-32-git100511/fs/aufs/loop.c	2011-05-11 11:28:00.310000011 +0200
+@@ -28,6 +28,9 @@
+  */
+ int au_test_loopback_overlap(struct super_block *sb, struct dentry *h_adding)
+ {
++	/* allow Squashfs file systems to be used as Aufs branches */
++	return 0;
++	
+ 	struct super_block *h_sb;
+ 	struct loop_device *l;
+ 
+EOFMKR
+
+exit 0
+
