@@ -1,0 +1,23 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/alphabetical/a/aufs-utils-4.0-20160510.tar.gz
+
+[vars]
+filesize=439290
+sha512=1ba55ee78bd69b998a952cf10b04247e9eb39f7a26073a547b915651929e71d45375fc570551a17c4b60da17e74c5df55a1f6bca9df7806e0de2603acd74d2dd
+desc="Utilities for the aufs layered filesystem. Note, requires kernel patch (pkg/kernel-aufs, qky-kernel)"
+
+[deps]
+kernel
+
+[build]
+#FAIL BROKEN BUILD
+#note, qky-kernel (renamed to kernel at build-time) has dep kernel-aufs, builds with aufs support.
+#note, got it from here: git clone git://aufs.git.sourceforge.net/gitroot/aufs/aufs-util.git aufs-utils
+# cd aufs-utils
+# git checkout origin/aufs4.0
+
+sed -i -e 's% \-static % %' Makefile
+
+make || exit 1
+
+make DESTDIR="$butch_install_dir" install
