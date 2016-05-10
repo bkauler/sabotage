@@ -1,0 +1,46 @@
+[mirrors]
+http://www.basic-converter.org/stable/bacon-3.2.2.tar.gz
+
+[vars]
+filesize=371739
+sha512=a341fb8e00254ad2efae2f9e45015efd7d0dc6e5044e9e718963de712c2b4e8ee79f9acc4946fc1ec0966d6bcdc98c89127766c526513b8449f5095eae1b968c
+desc="BaCon BASIC compiler, generates C and calls gnu C compiler"
+
+[deps]
+bash
+gtk+2
+
+[build]
+#note, this builds a commandline compiler, 'bacon', and a GTK IDE, 'bacongui'
+#note, bacon is written in shell script! needs bash 4.x.
+
+CFLAGS="$optcflags" LDFLAGS="$optldflags -fPIC" \
+  ./configure --prefix="$butch_prefix" $xconfflags
+
+make V=1 -j$MAKE_THREADS
+
+make DESTDIR="$butch_install_dir" install
+
+#grab some more stuff. unfortunately, can't build off-line!
+dest="$butch_install_dir""$butch_prefix"
+#HUG Highlevel Universal GUI library...
+wget http://www.basic-converter.org/hug.bac || exit 1
+mkdir temp1
+./build/bacon -d temp1 -f hug.bac -o '-fPIC'
+mkdir -p "$dest"/lib
+cp -a -f temp1/hug.so "$dest"/lib/
+
+#to link hug.so as a shared lib, need this:
+wget http://www.basic-converter.org/hug_imports.bac
+sed -i -e 's%"\./hug\.so"%"/lib/hug.so"%' hug_imports.bac
+mkdir -p "$dest"/share/BaCon
+cp -a -f hug_imports.bac "$dest"/share/BaCon/
+
+#might as well grab these text-editor syntax highlighters...
+#for gtksourceview:
+wget http://www.basic-converter.org/bacon.lang
+cp -a -f bacon.lang "$dest"/share/BaCon/
+#for vim:
+wget http://www.basic-converter.org/bacon.vim
+cp -a -f bacon.vim "$dest"/share/BaCon/
+
