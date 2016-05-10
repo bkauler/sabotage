@@ -74,9 +74,11 @@ svn
 libdevmapper
 parted
 mirdir
+bcrypt
 mp
 wpa-supplicant
 lynx
 htop
 mc
+vim
 

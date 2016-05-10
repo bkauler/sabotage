@@ -37,7 +37,8 @@ libxslt
 kmod
 bc
 pcre
-qky-glib
+glib
 unzip
 zip
 curl
+bash

@@ -10,7 +10,7 @@ desc="Metamail is a program developed at Bellcore that decodes MIME encoded mail
 
 
 [build]
-#WON'T COMPILE, WANTS sgtty.h FROM glibc
+#FAIL WON'T COMPILE, WANTS sgtty.h FROM glibc
 #from T2...
 patch -p1 < "$K"/metamail-1-2.7-54.patch
 patch -p1 < "$K"/metamail-2-automake.patch

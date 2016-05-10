@@ -10,9 +10,8 @@ desc="A utility to encrypt files"
 
 
 [build]
-#COMPILE FAILS
 
-sed -i -e "s%^CFLAGS = %CFLAGS = ${optcflags} %" -e "s%^LDFLAGS = .*%LDFLAGS = ${optldflags}%" Makefile
+sed -i -e "s%^CFLAGS = %CFLAGS = ${optcflags} %" -e "s%^LDFLAGS = .*%LDFLAGS = ${optldflags} -lz %" Makefile
 
 make || exit 1
 
