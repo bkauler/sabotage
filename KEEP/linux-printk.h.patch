@@ -1,0 +1,12 @@
+diff -Naur linux-4.4.2OPREV/include/linux/printk.h linux-4.4.2/include/linux/printk.h
+--- linux-4.4.2OPREV/include/linux/printk.h	2016-02-18 04:31:25.000000000 +0800
++++ linux-4.4.2/include/linux/printk.h	2016-05-10 10:22:02.346186288 +0800
+@@ -39,7 +39,7 @@
+ #define CONSOLE_LOGLEVEL_SILENT  0 /* Mum's the word */
+ #define CONSOLE_LOGLEVEL_MIN	 1 /* Minimum loglevel we let people use */
+ #define CONSOLE_LOGLEVEL_QUIET	 4 /* Shhh ..., when booted with "quiet" */
+-#define CONSOLE_LOGLEVEL_DEFAULT 7 /* anything MORE serious than KERN_DEBUG */
++#define CONSOLE_LOGLEVEL_DEFAULT 3 /* anything MORE serious than KERN_DEBUG */
+ #define CONSOLE_LOGLEVEL_DEBUG	10 /* issue debug messages */
+ #define CONSOLE_LOGLEVEL_MOTORMOUTH 15	/* You can't shut this one up */
+ 
