@@ -1,0 +1,23 @@
+[mirrors]
+https://www.x.org/releases/individual/app/xload-1.1.2.tar.bz2
+
+[vars]
+filesize=136745
+sha512=9c83d26bbb135cc0f2b3ef7f25b081cda5d080dd02b1c89195b40825a7d71211965b34336c853eb455472d9748f3edf64108455584b34b81673e2548806f423d
+
+[deps]
+libx11
+
+[build]
+#fails with: get_rload.c:27:29: fatal error: protocols/rwhod.h: No such file or directory
+# this is a libc header. 
+# patch from: https://patchwork.ozlabs.org/patch/572303/
+patch -p1 < "$K"/xload-fix-get_rload.patch
+
+CPPFLAGS="-D_GNU_SOURCE" CFLAGS="$optcflags" CXXFLAGS="$optcflags" \
+LDFLAGS="$optldflags -Wl,-rpath-link=$butch_root_dir$butch_prefix/lib" \
+  ./configure -C --prefix="$butch_prefix" $xconfflags
+make -j$MAKE_THREADS
+make DESTDIR="$butch_install_dir" install
+
+

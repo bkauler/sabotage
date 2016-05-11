@@ -1,0 +1,20 @@
+[mirrors]
+http://www.openprinting.org/download/foomatic/foomatic-filters-4.0.12.tar.gz
+
+[vars]
+filesize=265634
+sha512=5ce95bdac252d40c82f9afbd2e402f9b387f942d975013a51a0e23124fa76d827a4ff136a8c691e59d9060d4a6557e9b1d5f54192dee19c9d72465a175b23a0a
+desc="The universal print filter 'foomatic-rip', used by spoolers to convert PostScript job data into the printer's native format"
+
+
+[deps]
+
+
+[build]
+
+CFLAGS="$optcflags" LDFLAGS="$optldflags" \
+  ./configure -C --prefix="$butch_prefix" $xconfflags --disable-dbus
+
+make -j$MAKE_THREADS || exit 1
+
+make DESTDIR="$butch_install_dir" install

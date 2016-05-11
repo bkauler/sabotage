@@ -1,0 +1,22 @@
+[mirrors]
+http://downloads.sourceforge.net/project/gimp-print/gutenprint-5.2/5.2.11/gutenprint-5.2.11.tar.bz2
+
+[vars]
+filesize=6570118
+sha512=f4010e489dd6763b19113abf1d55e84cea8d36b920d03dbe204dba30ab0d3fb3e3391e739cd1a56e2f63581c8ce4a856a7f747deb6e7b18d7e1f7a3d87901c60
+desc="Printer drivers for Canon, Epson, Lexmark, Sony, Olympus, and PCL"
+
+[deps]
+cups
+cups-filters
+ijs
+
+[build]
+#patch from here: https://sourceforge.net/p/gimp-print/mailman/message/34446411/
+patch -p1 < "$K"/gutenprint-endianness-olympus.patch
+
+CPPFLAGS="-D_GNU_SOURCE" CFLAGS="$optcflags" CXXFLAGS="$optcflags" \
+LDFLAGS="$optldflags -Wl,-rpath-link=$butch_root_dir$butch_prefix/lib -liconv" \
+  ./configure -C --prefix="$butch_prefix" $xconfflags
+make -j$MAKE_THREADS
+make DESTDIR="$butch_install_dir" install

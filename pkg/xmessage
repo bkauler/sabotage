@@ -1,0 +1,17 @@
+[mirrors]
+https://www.x.org/releases/individual/app/xmessage-1.0.4.tar.bz2
+
+[vars]
+filesize=125011
+sha512=a087fb09595bf0b188a4525b45e9b607acd063cceae36c69c78a48674fb7eca1c82d5c2d2770c7f4425b499e4c002bfc0e377935308c218a330a2b4994b94ebd
+
+[deps]
+
+
+[build]
+CPPFLAGS="-D_GNU_SOURCE" CFLAGS="$optcflags" CXXFLAGS="$optcflags" \
+LDFLAGS="$optldflags -Wl,-rpath-link=$butch_root_dir$butch_prefix/lib" \
+  ./configure -C --prefix="$butch_prefix" $xconfflags
+make -j$MAKE_THREADS
+make DESTDIR="$butch_install_dir" install
+
