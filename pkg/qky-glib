@@ -1,9 +1,9 @@
 [mirrors]
-http://ftp.gnome.org/pub/gnome/sources/glib/2.45/glib-2.45.2.tar.xz
+http://ftp.gnome.org/pub/gnome/sources/glib/2.48/glib-2.48.1.tar.xz
 
 [vars]
-filesize=7151720
-sha512=ee25cd8865851a9e7dad0ce90f49883695e802c08f339f9dea83334ed3cd991f6940c83e3f701c24afa9644c939078092fe14a4997d9c70cec3883f4139f9e01
+filesize=7441032
+sha512=5bbea7d07ba6d75c35c6be8f1ebc685aa2549bd20030741b2d6e2c30e9b2d476c2afa50a974bbdad98c305666c8b04357b51619c97fe50d3e9965700088aad9b
 
 [deps]
 musl
@@ -19,7 +19,9 @@ perl
 pkgconf
 
 [build]
-for p in glib-gtimer-varargs glib-no_python ; do
+#20160511: chasing why cup-filters wouldn't compile, 'gdbus-codegen.py' missing from glib. 
+# glib-no_python.patch is the cause, take it out. I also found it breaks build of glib if dbus is installed.
+for p in glib-gtimer-varargs ; do
 	echo $p
 	patch -p1 < "$K"/$p.patch
 done
@@ -33,7 +35,9 @@ LDFLAGS="$optldflags" ./configure -C $xconfflags \
   --prefix="$butch_prefix" --disable-modular-tests --disable-selinux --disable-fam \
   --disable-silent-rules glib_cv_stack_grows=no glib_cv_uscore=no \
   ac_cv_func_posix_getpwuid_r=yes ac_cv_func_posix_getgrgid_r=yes \
-  --with-libiconv=gnu --with-pcre=system --enable-libelf
+  --with-libiconv=gnu --with-pcre=system --enable-libelf \
+  --enable-debug=no --disable-installed-tests --disable-always-build-tests \
+  --disable-static --disable-selinux
 
 echo '#include <string.h>' >> config.h
 

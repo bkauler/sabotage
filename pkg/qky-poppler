@@ -1,0 +1,40 @@
+[mirrors]
+http://poppler.freedesktop.org/poppler-0.43.0.tar.xz
+
+[vars]
+filesize=1671368
+sha512=e00422a875be2e9b8b16a268d31d1080f609ce070f553b2db8001fc71efebe44183d5e63f45b1111a99b106548809b1fe8474aca7710c20bc4c654968d42508b
+
+[deps.host]
+pkgconf
+
+[deps]
+libx11
+libtiff
+libjpeg
+libpng
+freetype
+fontconfig
+cairo
+glib
+
+[build]
+patch -p1 < "$K"/poppler-segfault.patch
+# https://bugs.freedesktop.org/show_bug.cgi?id=12925
+
+[ -n "$CROSS_COMPILE" ] && \
+  xconfflags="--host=$($CC -dumpmachine) \
+  --with-sysroot=$butch_root_dir"
+
+CPPFLAGS="-D_GNU_SOURCE" CFLAGS="$optcflags" CXXFLAGS="$optcflags" \
+LDFLAGS="$optldflags -Wl,-rpath-link=$butch_root_dir$butch_prefix/lib" \
+  ./configure -C --prefix="$butch_prefix" $xconfflags \
+  --enable-introspection=no --enable-cms=lcms2 --disable-gtk-test \
+  --disable-poppler-qt4 --disable-poppler-qt5 --enable-xpdf-headers \
+  --enable-zlib --disable-dependency-tracking --enable-opi --enable-a4-paper \
+  --enable-libcurl --enable-utils \
+  --enable-poppler-glib --enable-libpng --enable-libjpeg --enable-libtiff
+
+[ -n "$CROSS_COMPILE" ] && "$K"/libtool.cross.gen --sysroot="$butch_root_dir"
+make V=1 -j$MAKE_THREADS
+make DESTDIR="$butch_install_dir" install

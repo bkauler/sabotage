@@ -1,0 +1,32 @@
+[mirrors]
+https://www.openprinting.org/download/cups-filters/cups-filters-1.8.3.tar.xz
+
+[vars]
+filesize=1373028
+sha512=5c3648670ae141038a373c4e800e81a7584759e3caf8c4e4468cb0da11c0ff521ac80678e603856c7209da6638673400305c38903cb27e3b4d792d17947e2af4
+
+[deps]
+qpdf
+cups
+ijs
+ghostscript
+poppler
+
+[build]
+#note, was unable to compile, missing 'gdbus-codegen.py'. traced it to a patch in glib recipe, 'glib-no_python.py' (removed patch, that fixed it).
+#note, have changed recipe for poppler, much better for cups-filters.
+
+# in case this package doesnt work properly,
+# install lcms2 may help (this is noted as a required dep in BLFS)
+
+
+CFLAGS="-D_GNU_SOURCE $optcflags" LDFLAGS="$optldflags -liconv" \
+  ./configure -C --prefix="$butch_prefix" \
+  --without-rcdir \
+  --with-gs-path="$butch_prefix"/bin/gs \
+  --disable-avahi \
+  --disable-static \
+  --without-php --disable-dbus --disable-ldap
+
+make -j$MAKE_THREADS
+make DESTDIR="$butch_install_dir" install
