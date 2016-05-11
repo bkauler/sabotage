@@ -75,6 +75,11 @@ libdevmapper
 parted
 mirdir
 bcrypt
+puppyinputdetect
+puppyserialdetect
+dvd-close
+cddetect
+cddetect-quick
 mp
 wpa-supplicant
 lynx
