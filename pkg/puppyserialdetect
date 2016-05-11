@@ -1,0 +1,18 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/puppyserialdetect-1.1h.tar.bz2
+
+[vars]
+filesize=8897
+sha512=6c7359603d604a7d466eb4165ab030ffe0ff5156d3a9f0feac6d6da7cddcb595ecc2939e51d6fc3631a701c71d00d1aa8acc1e7aeda17ec5db4ef6993735ad6a
+desc="Detects usb/ps2 mouse and keyboard, and serial mouse and serial modem"
+
+[deps]
+
+
+[build]
+#note, run with --help to see how to use.
+./compile.sh || exit 1
+
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p $dest/sbin
+install -m755 puppyserialdetect $dest/sbin

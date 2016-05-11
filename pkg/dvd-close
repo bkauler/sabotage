@@ -1,0 +1,20 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/dvd_close-7.1-2014.tar.bz2
+
+[vars]
+filesize=115607
+sha512=f361a3aceb0cd95ae2efa76f752f49c6b672f2fdf955b13c3825e2ba70049218d474321ef72e5a1a81306339db7699897414d39c280f8c6715a7f15f8de5a28e
+desc="The 'close' utility got taken out of dvd+rw-tools. This is it."
+
+[deps]
+
+
+[build]
+make || exit 1
+g++ -O2 -fno-exceptions -D_REENTRANT -o close close.cpp
+
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p $dest/bin
+cp -a -f close $dest/bin/
+
+

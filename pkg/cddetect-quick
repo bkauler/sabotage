@@ -1,0 +1,19 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/cddetect_quick-2008-1.tar.bz2
+
+[vars]
+filesize=1323
+sha512=53edcffdd968ad586bb830d7e880892e9f26664485d686e685a1f93ef1513c358a3ac0996e51421c844e0648fcb552754630ffd0411d026d4e19f915d872f283
+desc="Detect CD inserted in drive, fast. Hack of cddetect."
+
+[deps]
+
+
+[build]
+
+gcc cddetect.c -o cddetect_quick || exit 1
+
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p $dest/sbin
+install -m755 -s cddetect_quick $dest/sbin
+

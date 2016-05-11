@@ -1,0 +1,18 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/puppyinputdetect-1.1i.tar.bz2
+
+[vars]
+filesize=8699
+sha512=4735bea8a0a646cf32aa1438ac09eb10aba71f2cb8d08a3a8dc5b7b5990a0a8ab6624c6f09778bdcf08f6d36795d15a6db32bbb848cf233729144e4e86ce8726
+desc="Detect usb/ps2 mouse and keyboard. Does not detect serial mouse"
+
+[deps]
+
+
+[build]
+#note, run with --help to see how to use.
+make || exit 1
+
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p $dest/sbin
+install -m755 -s puppyinputdetect $dest/sbin

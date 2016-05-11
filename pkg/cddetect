@@ -1,0 +1,19 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/cddetect-2.1-1.tar.bz2
+
+[vars]
+filesize=11290
+sha512=8a64d3c743f3e5664f0cde39604a69c993aa4a4b1e8f8589469a85bec48caa06444f6c833a89a8f8c08eff50a48484617f8d572e6047ffdf0f13a51bb138cf47
+desc="Detect CD inserted in drive"
+
+[deps]
+
+
+[build]
+patch -p1 < "$K"/cddetect-2.1-1-limits.patch
+make || exit 1
+
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p $dest/sbin
+install -m755 cddetect $dest/sbin
+
