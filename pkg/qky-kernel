@@ -63,7 +63,7 @@ sed -i -e 's%^#include <stddef.h>%#include <linux/stddef.h>%' net/ceph/snapshot.
 
 #installation tries to access non-existent lib/modules/4.4.2 (and run depmod in it)
 #hack, manually create it...
-mkdir -p "$R"/lib/modules/4.4.2/kernel
+mkdir -p "$R"/lib/modules/${LINUX_VER}/kernel
 
 export ARCH=$A
 linux_config="$K"/quirky-linux.config-4.4-${ARCH}
