@@ -1,0 +1,17 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/xcursorgen-1.0.6.tar.bz2
+
+[vars]
+filesize=124545
+sha512=3b464b7be3cec8c6d2bf4538266108bdc09e1dae4053d573f7f38e004929b41be0d996aa54918490fa040655644e2b0d4fab1ec24cca014d77bdb91c41ab1db4
+desc="X cursor file generator"
+
+[deps]
+
+
+[build]
+CFLAGS="$optcflags" LDFLAGS="$optldflags" \
+  ./configure -C --prefix="$butch_prefix" $xconfflags
+make DESTDIR="$butch_install_dir" install
+
+

@@ -1,0 +1,28 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/bbc_provided-2003.tar.bz2
+
+[vars]
+filesize=25321
+sha512=68a44af92ad80cca27c8d46581682ffded4ac631990fe7cdf91272076662c1df426ffa369fffd5bf814a19f86555774dc6bde8206ff51cee4c55d3a2eed6c9f5
+desc="Network utilities: ipcalc, or, and, dotquad"
+
+[deps]
+
+
+[build]
+dest="$butch_install_dir""$butch_prefix"
+
+[ -f and ] && rm -f and
+[ -f or ] && rm -f or
+[ -f dotquad ] && rm -f dotquad
+[ -f ipcalc ] && rm -f ipcalc
+gcc -Wall -O2 -s -o and andor.c -DAND
+gcc -Wall -O2 -s -o or andor.c -DOR
+gcc -Wall -O2 -s -o dotquad dotquad.c
+gcc -Wall -O2 -s -o ipcalc ipcalc.c -lpopt
+
+mkdir -p "$dest"/bin
+install -m755 -s and "$dest"/bin
+install -m755 -s or "$dest"/bin
+install -m755 -s dotquad "$dest"/bin
+install -m755 -s ipcalc "$dest"/bin

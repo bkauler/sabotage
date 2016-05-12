@@ -1,0 +1,18 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/gnome-menus-2.14.3.tar.bz2
+
+[vars]
+filesize=406000
+sha512=17cb019184e7d1fe6ea7974c6217aed2a4661f0ea85a3779da8e5d51ab22880286d1b3b69fdc9d5cd704738c920c427355d9f052a8449e8bbd14ad1b2ef7c8e0
+desc="An implementation of the freedesktop menu specification for GNOME"
+
+[deps]
+
+
+[build]
+#need this for pkg xdg-puppy.
+CFLAGS="$optcflags" LDFLAGS="$optldflags" \
+  ./configure -C --prefix="$butch_prefix" $xconfflags \
+  --disable-python --enable-debug=no
+
+make DESTDIR="$butch_install_dir" install

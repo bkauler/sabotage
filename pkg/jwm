@@ -1,0 +1,33 @@
+[mirrors]
+http://joewing.net/projects/jwm/snapshots/jwm-1524.tar.xz
+
+[vars]
+filesize=270756
+sha512=f7ad34923cf22193dd4087482b5f8a010ae1f4858586b8d9d14e6a084b11fa818926a599562d563eaff0e46a939ab7ca4237c6da7821d3d37497c4f850ac25ac
+desc="JWM is a window manager for the X11 Window System"
+
+[deps]
+libx11
+fribidi
+libpng
+libjpeg
+librsvg
+cairo
+libxft
+libxpm
+
+[build]
+CFLAGS="$optcflags" 
+LDFLAGS="$optldflags -Wl,-rpath-link=$butch_root_dir$butch_prefix/lib -liconv" \
+  ./configure -C --prefix="$butch_prefix" $xconfflags \
+  --disable-confirm
+
+#build failing in 'po' folder. do a quick hack for now...
+sed -i '/\$(MAKE) -C po /d' Makefile
+
+make -j$MAKE_THREADS
+make DESTDIR="$butch_install_dir" install
+
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p $dest/share/doc/nls/jwm
+cp -a -f po/jwm.pot $dest/share/doc/nls/jwm/

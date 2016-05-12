@@ -1,0 +1,20 @@
+[mirrors]
+http://www.ibiblio.org/pub/Linux/apps/sound/soundcard/setvol-1.1.tar.gz
+
+[vars]
+filesize=6207
+sha512=120937e6c18846278e2fd9d2dad93f1db999b62b815850aad0f12d89ab87d6c0c655e22fd94286e0da7f0ea2e1f1a5f5949f7bacd21ec6a6cc8aa8bffe7d9186
+desc="A simple commandline volume control"
+
+[deps]
+alsa-lib
+
+[build]
+
+[ -f setvol ] && rm -f setvol
+gcc -o setvol setvol.c
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p $dest/bin
+mkdir -p $dest/share/doc
+install -m755 -s setvol $dest/bin
+install -m644 README $dest/share/doc/setvol.txt

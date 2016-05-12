@@ -1,0 +1,43 @@
+[mirrors]
+https://people.freedesktop.org/~hadess/shared-mime-info-0.90.tar.bz2
+
+[vars]
+filesize=580163
+sha512=7bc05939f6df99f082e8325593e23a3981bc9c613f1cd73cd5e098ea1bb6f219a345b81e5655a0dc61f1c14bf63085cd86b6e96ec859ead0a09ea894c53fb876
+desc="The freedesktop.org shared MIME database"
+
+[deps]
+glib
+libxml2
+
+[build]
+#BK: deliberately using an old version, as later versions are broken (don't support inline hierarchy).
+
+mkdir .deps
+touch .deps/update_mime_database-update-mime-database.Tpo
+
+[ -n "$CROSS_COMPILE" ] && xconfflags="--host=$($CC -dumpmachine)"
+CFLAGS="$optcflags -D_GNU_SOURCE" \
+LDFLAGS="$optldflags -Wl,-rpath-link=$butch_root_dir$butch_prefix/lib" \
+  ./configure -C --prefix="$butch_prefix" $xconfflags
+
+sed -i 's@$(AM_V_at)$(am__mv) $(DEPDIR)/update_mime_database-update-mime-database.Tpo@#@' Makefile
+
+for i in po ; do
+        printf 'check:\n\ttrue\n\nall:\n\ttrue\ninstall:\n\ttrue\clean:\n\ttrue\n\n' > "$i"/Makefile
+done
+
+# FIXME makefile is buggy and breaks randomly with multiple processes
+make -j1
+make DESTDIR="$butch_install_dir" install
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p "$dest"/lib/pkgconfig
+mv "$dest"/share/pkgconfig/* "$dest"/lib/pkgconfig/
+rm -rf "$dest"/share/pkgconfig
+
+#BK:
+mkdir -p "$dest"/etc/profile.d
+cat > "$dest"/etc/profile.d/0-xdg-base <<-EOT
+export XDG_CONFIG_DIRS=/etc/xdg
+export XDG_DATA_DIRS=/share
+EOT
