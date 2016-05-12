@@ -1,0 +1,29 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/retrovol-0.13.1.tar.bz2
+
+[vars]
+filesize=168137
+sha512=03d81cf8907a438f53786059864e1b0f28906cc543db7fd382c44a4aaa201bcae4f88000f6daae783f6c8a21c91e7781a3bb4a72f671f27dd1def8bdcce5d7fa
+desc="Retrovol is a volume setting program and mixer. Creates an icon in the tray."
+
+[deps]
+gtk+2
+gettext-gnu
+
+[build]
+
+CCFLAGS="$optcflags" LDFLAGS="$optldflags" \
+  ./configure --prefix="$butch_prefix" $xconfflags
+make -j$MAKE_THREADS
+make DESTDIR="$butch_install_dir" install
+
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p "$dest"/share/doc/nls/retrovol
+cp -a -f po/retrovol.pot "$dest"/share/doc/nls/retrovol/
+
+#puppy has /root/Startup, changed...
+mkdir -p "$dest"/lib/Startup
+echo '#!/bin/sh
+exec retrovol -hide' > "$dest"/lib/Startup/retrovol_tray
+chmod 755 "$dest"/lib/Startup/retrovol_tray
+

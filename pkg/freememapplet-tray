@@ -1,0 +1,29 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/freememapplet_tray-2.4.tar.bz2
+
+[vars]
+filesize=7849
+sha512=55476ccb332aa546b7721c4bbf3fcbec0af7746c9ed0395c737e2fc90d1f675c47671c9100cc03a1d2fa5396613980576db17b9328b9774a1a80d70d365752f5
+desc="Free memory applet for desktop tray. Designed for Puppy Linux."
+
+[deps]
+gtk+2
+gettext-gnu
+
+[build]
+dest="$butch_install_dir""$butch_prefix"
+
+sed -i -e 's%/usr/%/%' freememapplet_tray.c
+
+[ -f freememapplet_tray ] && rm -f freememapplet_tray
+[ -f freememapplet_tray.pot ] && rm -f freememapplet_tray.pot
+gcc freememapplet_tray.c -o freememapplet_tray `pkg-config --cflags --libs gtk+-2.0`
+xgettext --keyword="_" -o freememapplet_tray.pot freememapplet_tray.c
+
+#these destinations are Puppy-heritage: /root/Startup
+#need to rethink these. set to /lib/Startup
+strip --strip-unneeded freememapplet_tray
+mkdir -p "$dest"/lib/Startup
+cp -a -f freememapplet_tray "$dest"/lib/Startup/
+mkdir -p "$dest"/share/doc/nls/freememapplet_tray
+cp -a -f freememapplet_tray.pot "$dest"/share/doc/nls/freememapplet_tray/

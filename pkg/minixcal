@@ -1,0 +1,19 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/minixcal-1.1.1.tar.bz2
+
+[vars]
+filesize=15772
+sha512=c2876bc17b4bb8141a1efd760facad96809d7d37bcf51f8a9c1c886810186d95fe155ec8b7be0b72cf2a789b79833ed5aec85a2c15c292817e3fdfcb1d072783
+desc="Calendar applet, written in gtk2. Excellent as tray applet"
+
+[deps]
+gtk+2
+
+[build]
+[ -f minixcal ] && rm -f minixcal
+gcc minixcal.c -o minixcal `pkg-config --cflags gtk+-2.0` `pkg-config --libs gtk+-2.0` -lX11
+
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p "$dest"/bin
+install -m755 -s minixcal "$dest"/bin
+

@@ -1,0 +1,50 @@
+[mirrors]
+http://ftp.gnu.org/pub/gnu/gettext/gettext-0.10.40.tar.gz
+
+[vars]
+filesize=1352976
+sha512=307c3ab4aaf044c1b0426686c6233e997d08cd590dadc3c68b76d81074350db6d653fc6b192c6b26f7d0efea450485a6c18ebb1433c83ae4375073c296f356a4
+
+[deps]
+curses
+
+[deps.host]
+dynamic-toolchain
+
+[build]
+#compiling a very old version of gnu gettext. deliberately.
+
+#want libintl.a only...
+LDFLAGS="$optldflags" CFLAGS="$optcflags" \
+  ./configure --prefix="$butch_prefix" \
+  --disable-shared --enable-static
+
+##msgfmt fails... NO, fixed below
+#sed -i -e 's% msgfmt % %' src/Makefile
+#sed -i -e 's%^msgfmt$(EXEEXT) msgmerge$(EXEEXT) %msgmerge$(EXEEXT) %' src/Makefile
+##msgunfmt fails...
+#sed -i -e 's% msgunfmt % %' src/Makefile
+#sed -i -e 's%^msgmerge$(EXEEXT) msgunfmt$(EXEEXT) %msgmerge$(EXEEXT) %' src/Makefile
+
+#getline.h not needed, conflicts with /usr/include/stdio.h
+sed -i '/^#include "getline.h"/d' src/msgfmt.c
+sed -i '/^#include "getline.h"/d' src/msgunfmt.c
+sed -i '/^#include "getline.h"/d' src/xgettext.c
+sed -i '/^#include "getline.h"/d' src/msgcomm.c
+
+make -j$MAKE_THREADS
+
+#have to run this, then delete everything else afterward...
+make install DESTDIR="$butch_install_dir"
+
+dest="$butch_install_dir""$butch_prefix"
+rm -rf "$dest"/doc
+rm -rf "$dest"/include
+rm -rf "$dest"/info
+rm -rf "$dest"/lib
+rm -rf "$dest"/man
+rm -rf "$dest"/share
+#if already installed 'gettext' (gettext-tiny), do not overwrite...
+[ -e "$R"/bin/msgfmt ] && rm -f "$dest"/bin/msgfmt
+[ -e "$R"/bin/msgmerge ] && rm -f "$dest"/bin/msgmerge
+

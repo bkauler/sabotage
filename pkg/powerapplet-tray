@@ -1,0 +1,29 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/powerapplet_tray-2.6.tar.bz2
+
+[vars]
+filesize=5243
+sha512=31c1a7a831e84aa48c1faebe77b1106e991d8ebc43093e1d992b0b3e6a521b3fe7d15b0679ef2b79a918334f408f78bf7c7592f42d0066c43a1fcafd2290487d
+desc="Displays battery state-of-charge, gtk2 applet for desktop tray"
+
+[deps]
+gtk+2
+gettext-gnu
+
+[build]
+dest="$butch_install_dir""$butch_prefix"
+
+sed -i -e 's%/usr/%/%' powerapplet_tray.c
+
+[ -f powerapplet_tray ] && rm -f powerapplet_tray
+[ -f powerapplet_tray.pot ] && rm -f powerapplet_tray.pot
+gcc powerapplet_tray.c -o powerapplet_tray `pkg-config --cflags --libs gtk+-2.0`
+xgettext --keyword="_" -o powerapplet_tray.pot powerapplet_tray.c
+
+#these destinations are Puppy-heritage: /root/Startup
+#need to rethink these. set to /lib/Startup
+strip --strip-unneeded powerapplet_tray
+mkdir -p "$dest"/lib/Startup
+cp -a -f powerapplet_tray "$dest"/lib/Startup/
+mkdir -p "$dest"/share/doc/nls/powerapplet_tray
+cp -a -f powerapplet_tray.pot "$dest"/share/doc/nls/powerapplet_tray/

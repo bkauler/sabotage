@@ -1,0 +1,36 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/network_tray-3.1.tar.bz2
+
+[vars]
+filesize=16864
+sha512=1f0078d23c4368175efbf039b1a7abdbcabd55e0790800a5c5b212ab797209514a1d59e574e987bbdd0f5160eaf726888794307ba97c940e603fdfbcde63c1ce
+desc="Displays network connection status, for desktop tray"
+
+[deps]
+gtk+2
+gettext-gnu
+
+[build]
+dest="$butch_install_dir""$butch_prefix"
+
+sed -i -e 's%/usr/%/%' network_tray.c
+sed -i -e 's%/local/lib/%/share/%' network_tray.c
+
+[ -f network_tray ] && rm -f network_tray
+[ -f network_tray.pot ] && rm -f network_tray.pot
+gcc network_tray.c -o network_tray `pkg-config --cflags --libs gtk+-2.0`
+xgettext --keyword="_" -o network_tray.pot network_tray.c
+
+#these destinations are Puppy-heritage: /root/Startup, /usr/local/lib/X11/mini-icons
+#need to rethink these. set to /lib/Startup, /share/mini-icons...
+strip --strip-unneeded network_tray
+mkdir -p "$dest"/share/mini-icons
+cp -f networkblank.xpm "$dest"/share/mini-icons/
+cp -f networkboth.xpm "$dest"/share/mini-icons/
+cp -f networkdead.xpm "$dest"/share/mini-icons/
+cp -f networkin.xpm "$dest"/share/mini-icons/
+cp -f networkout.xpm "$dest"/share/mini-icons/
+mkdir -p "$dest"/lib/Startup
+cp -a -f network_tray "$dest"/lib/Startup/
+mkdir -p "$dest"/share/doc/nls/network_tray
+cp -a -f network_tray.pot "$dest"/share/doc/nls/network_tray/
