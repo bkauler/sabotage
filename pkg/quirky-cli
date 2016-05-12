@@ -80,6 +80,7 @@ puppyserialdetect
 dvd-close
 cddetect
 cddetect-quick
+bbc-provided
 mp
 wpa-supplicant
 lynx

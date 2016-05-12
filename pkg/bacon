@@ -17,12 +17,16 @@ gtk+2
 CFLAGS="$optcflags" LDFLAGS="$optldflags -fPIC" \
   ./configure --prefix="$butch_prefix" $xconfflags
 
+#Makefile does not recognise DESTDIR...
+dest="$butch_install_dir""$butch_prefix"
+PTN="s%^prefix .*%prefix          = ${dest}%"
+sed -i -e "$PTN" Makefile
+
 make V=1 -j$MAKE_THREADS
 
-make DESTDIR="$butch_install_dir" install
+make install
 
 #grab some more stuff. unfortunately, can't build off-line!
-dest="$butch_install_dir""$butch_prefix"
 #HUG Highlevel Universal GUI library...
 wget http://www.basic-converter.org/hug.bac || exit 1
 mkdir temp1
