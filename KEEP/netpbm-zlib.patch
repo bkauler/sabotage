@@ -1,0 +1,23 @@
+diff -Naur netpbm-10.34ORIG/converter/other/pnmtopng.c netpbm-10.34/converter/other/pnmtopng.c
+--- netpbm-10.34ORIG/converter/other/pnmtopng.c	2006-06-18 10:59:06.000000000 +0800
++++ netpbm-10.34/converter/other/pnmtopng.c	2016-05-13 19:29:51.000000000 +0800
+@@ -68,6 +68,7 @@
+ #include "mallocvar.h"
+ #include "nstring.h"
+ #include "version.h"
++#include <zlib.h>
+ 
+ struct zlibCompression {
+     /* These are parameters that describe a form of zlib compression.
+@@ -2652,10 +2653,7 @@
+        without USE_GLOBAL_ARRAYS.  Cygwin versions are normally built
+        without USE_GLOBAL_ARRAYS.  -bjh 2002.06.17.
+     */
+-    fprintf(stderr, "   Compiled with libpng %s.\n",
+-            PNG_LIBPNG_VER_STRING);
+-    fprintf(stderr, "   Compiled with zlib %s; using zlib %s.\n",
+-            ZLIB_VERSION, zlib_version);
++    /*BK removed*/
+     fprintf(stderr, "\n");
+ }
+ 
