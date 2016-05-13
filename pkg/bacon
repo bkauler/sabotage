@@ -39,6 +39,8 @@ wget http://www.basic-converter.org/hug_imports.bac
 sed -i -e 's%"\./hug\.so"%"/lib/hug.so"%' hug_imports.bac
 mkdir -p "$dest"/share/BaCon
 cp -a -f hug_imports.bac "$dest"/share/BaCon/
+#need to install this as well, as apps may include it, rather than use shared lib...
+cp -a -f hug.bac "$dest"/share/BaCon/
 
 #might as well grab these text-editor syntax highlighters...
 #for gtksourceview:
