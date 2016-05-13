@@ -1,0 +1,21 @@
+[mirrors]
+http://downloads.sourceforge.net/project/libpng/libpng12/1.2.56/libpng-1.2.56.tar.gz
+
+[vars]
+filesize=1114806
+sha512=f29082281fb25184cca7897635557bc281e4f4dc91e7bf7a7458d14e8684c9c839ec24b88144bcdaeec2d0b0a0d7c11787f2cd41a5a3fc70523801125b330e28
+desc="library to handle png files with a history of sec. vulns and API breakage"
+
+[deps]
+zlib
+
+[build]
+#note, major distros such as Ubuntu, Debian and Puppy have stayed with the 1.2.x series.
+#after some frustration in Sabotage trying to compile netpbm with libpng 1.5.x, have rolled back.
+#the 1.2.x series is still actively updated!
+
+[ -n "$CROSS_COMPILE" ] && xconfflags="--host=$($CC -dumpmachine)"
+CFLAGS="-D_GNU_SOURCE $optcflags" LDFLAGS="$optldflags" \
+  ./configure -C --prefix="$butch_prefix" $xconfflags
+make -j$MAKE_THREADS
+make DESTDIR="$butch_install_dir" install

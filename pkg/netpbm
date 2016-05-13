@@ -1,0 +1,49 @@
+[mirrors]
+http://downloads.sourceforge.net/project/netpbm/archive_of_old_release_system/10.34/netpbm-10.34.tgz
+
+[vars]
+filesize=2507007
+sha512=5d5a2ad223762725d195dae492463c115210ab04a528982bb2bb304ca17dfda817a6685e69b75755195b2b7a940fa9148494ad91bbf2ea63fcdbf5cc709de21a
+desc="Netpbm is a CLI toolkit for conversion and manipulation of images"
+
+[deps]
+libpng
+giflib
+libtiff
+libjpeg
+zlib
+
+[build]
+# BK
+# note, we use 10.34 in Puppy Linux, as later versions do not work in at least
+# one of our scripts. we never followed this up with the developer.
+# converter/ppm/xpmtoppm.c has getline(), conflicts with /usr/include/stdio.h
+# i have inserted a rename to my_getline().
+#oh man, this is a hairy build!!!...
+
+#from T2...
+patch -p1 < "$K"/netpbm-glibc.patch
+patch -p1 < "$K"/netpbm-jpeg.patch
+patch -p1 < "$K"/netpbm-makefile.patch
+patch -p1 < "$K"/netpbm-shared_files-fix.patch
+patch -p1 < "$K"/netpbm-zlib.patch
+
+{ echo -e "\ngnu\nregular\nshared\ny\n\n\n"
+  echo -e "\n\n\n\n\n\n`pkgprefix libdir libx11`/libX11.so\n\nnone\n" ; } | ./configure
+
+sed -i -e 's%getline%my_getline%' converter/ppm/xpmtoppm.c
+sed -i -e 's% -ffast-math % -ffast-math -flax-vector-conversions -fPIC -lz %' Makefile.config
+
+make
+
+[ -d /tmp/netpbm.bin ] && rm -rf /tmp/netpbm.bin
+make package pkgdir=/tmp/netpbm.bin
+
+dest="$butch_install_dir""$butch_prefix"
+{ echo -e "/tmp/netpbm.bin"
+  echo -e "$dest\n$dest/bin\n$dest/lib"
+  echo -e "n"
+  echo -e "$dest/lib\n$dest/share\n\n\n\nn\n" ; } | ./installnetpbm
+
+rm -rf /tmp/netpbm.bin
+
