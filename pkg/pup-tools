@@ -1,0 +1,41 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/pup-tools-20150407.tar.bz2
+
+[vars]
+filesize=27044
+sha512=3d2e688189c7191b84ba6bf993452e32a159d163c81650fcd147240865aff4c647eb21afd5856ac7eabc922314a9c3d8ede4f66b0581ed4a516b1564415f1d9e
+desc="Core utilities used in Puppy Linux and derivatives"
+
+[deps]
+gtk+2
+bacon
+
+[build]
+cd bacon
+./build-pup-tools
+cd ..
+cd gcc
+./build-pup-tools
+cd ..
+cd diet
+#used to use dietlibc, but now building with musl...
+gcc printcols.c -o printcols
+gcc vercmp.c -o vercmp
+gcc truncate.c -o truncate
+cd ..
+
+dest="$butch_install_dir""$butch_prefix"
+mkdir "$dest"/sbin
+for AEXE in debdb2pupdb find_cat pngoverlay popup proxy-setup pup_event_frontend_d pup_event_ipc welcome1stboot
+do
+ install -m755 -s bacon/$AEXE "$dest"/sbin
+done
+for AEXE in getcurpos
+do
+ install -m755 -s gcc/$AEXE "$dest"/sbin
+done
+for AEXE in printcols truncate vercmp
+do
+ install -m755 -s diet/$AEXE "$dest"/sbin
+done
+

@@ -1,0 +1,41 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/rox-filer-2011-10-22.tar.bz2
+
+[vars]
+filesize=1230072
+sha512=f2c4feaf22645621114ec14d86c23c2eba64ea6d984059aeb3122ed8c2be15182dad31b29b85030b0185ab9ac78ec74f1131b7ced902eddcded2075ffd5f2618
+desc="File manager, also handles desktop."
+
+[deps]
+gtk+2
+
+[build]
+butch_do_relocate=false
+
+#from T2...
+patch -p1 < "$K"/rox-filer-01-Add-explicit-dependency-on-libm-and-libdl.patch
+patch -p1 < "$K"/rox-filer-02-Extend-commit-c2232d50-to-Send-to.patch
+patch -p1 < "$K"/rox-filer-03-rox-filer-20111022-modify-columns.patch
+patch -p1 < "$K"/rox-filer-04-rox-filer-default-settings.patch
+patch -p1 < "$K"/rox-filer-05-log-window.patch
+patch -p1 < "$K"/rox-filer-06-jwm-menus-fix.patch
+patch -p1 < "$K"/rox-filer-07-sendto-to-openwith.patch
+patch -p1 < "$K"/rox-filer-08-remove-user-msg.patch
+
+./ROX-Filer/AppRun --compile
+
+dest="$butch_install_dir""$butch_prefix"
+install -m755 ROX-Filer/ROX-Filer "$dest"
+install -m644 ROX-Filer/AppInfo.xml "$dest"
+install -m755 ROX-Filer/AppRun "$dest"
+install -m644 ROX-Filer/Options.xml "$dest"
+install -m644 ROX-Filer/style.css "$dest"
+install -m644 ROX-Filer/subclasses "$dest"
+install -m644 ROX-Filer/Templates.ui "$dest"
+cp -a -f ROX-Filer/images "$dest"/
+cp -a -f ROX-Filer/.DirIcon "$dest"/
+cp -a -f ROX-Filer/ROX "$dest"/
+cp -a -f ROX-Filer/Help "$dest"/
+
+ln -r -s "$dest"/ROX-Filer "$R"/bin/rox
+ln -r -s "$dest"/ROX-Filer "$R"/bin/ROX-Filer

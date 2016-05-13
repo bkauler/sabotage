@@ -1,0 +1,34 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/xarchive-0.2.8-6-i18n.tar.bz2
+
+[vars]
+filesize=137842
+sha512=0716f03af38a26889decb8eea4615fdcd17c1c688013896c374e5a2379ded558732a0bfacd2b7a3e31861c763aee5752d609206472cd61c71bbbbb6392f3a68a
+desc="A frontend to 7zip, arj, bzip2, gzip, iso, rar, lha, deb, rpm, tar and zip. Note: this is NOT xarchiver."
+
+[deps]
+gtk+2
+zlib
+zip
+unzip
+bzip2
+xz
+gettext-gnu
+
+[build]
+#use i18n source. refer: http://bkhome.org/blog/?viewDetailed=02836
+
+CFLAGS="-D_GNU_SOURCE $optcflags" \
+LDFLAGS="$optldflags" \
+  ./configure --prefix="$butch_prefix" $xconfflags
+
+make -j$MAKE_THREADS
+make DESTDIR="$butch_install_dir" install
+
+dest="$butch_install_dir""$butch_prefix"
+cd src
+[ -f xarchive.pot ] && rm -f xarchive.pot
+xgettext --keyword="_" main.c -o xarchive.pot widgets_gtk.c myfc_gtk.c
+mkdir -p "$dest"/share/doc/nls/xarchive
+install -m644 xarchive.pot "$dest"/share/doc/nls/xarchive
+cd ..

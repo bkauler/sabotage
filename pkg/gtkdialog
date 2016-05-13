@@ -1,0 +1,29 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/gtkdialog-0.8.4pre-svn514.tar.bz2
+
+[vars]
+filesize=907069
+sha512=92ed467653982b6016f27ee07f888df2070e6938bd4f59a2390bbf4b91e00e1d51d1ee714d890f54fddec9df2ae5ebe8e79ac02d04b2cd78d9e1f1cd7fdd8c26
+desc="A utility for creating X11 dialog boxes from shell scripts"
+
+[deps]
+gtk+2
+
+[build]
+#hmmm, have to do this...
+if [ ! -f doc/version.texi ];then
+  echo '@set UPDATED 24 September 2015
+@set UPDATED-MONTH September 2015
+@set EDITION 0.8.4
+@set VERSION 0.8.4' > doc/version.texi
+fi
+
+./autogen.sh
+
+CFLAGS="$optcflags" \
+LDFLAGS="$optldflags" \
+  ./configure --prefix="$butch_prefix" $xconfflags
+
+make -j$MAKE_THREADS
+make DESTDIR="$butch_install_dir" install
+

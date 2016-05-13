@@ -1,0 +1,20 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/xdialog-2.3.1-20110924_patched_extrabutton_dougal_default_nostrip_debian2.tar.bz2
+
+[vars]
+filesize=483817
+sha512=9c452a9996ee5f686743d989f732b64bbebea1ef6d1a1c955e442d6fa8f5ed544ba7d2485612ae1d4f32296eee4125aeefeb38327ce7f6517fe3770405b990fb
+desc="A utility for creating X11 dialog boxes from shell scripts"
+
+[deps]
+gtk+2
+
+[build]
+CFLAGS="$optcflags" \
+LDFLAGS="$optldflags" \
+  ./configure --prefix="$butch_prefix" $xconfflags --with-gtk2
+
+make -j$MAKE_THREADS
+make DESTDIR="$butch_install_dir" install
+
+

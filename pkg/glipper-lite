@@ -1,0 +1,18 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/glipper-lite-2013-technosaurus.tar.bz2
+
+[vars]
+filesize=24082
+sha512=67afbc552ce9d815a74d939f133d824a6a465334746ceeacdcbcd3dc941095e4e24511816724ce0be924b17413c8170f593f60ebf2a7cd777fca77ccc7439c92
+desc="Glipper-Lite is a clipboard manager in the desktop tray, written in C"
+
+[deps]
+gtk+2
+
+[build]
+./build
+
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p "$dest"/bin
+install -m 755 -s glipper "$dest"/bin
+

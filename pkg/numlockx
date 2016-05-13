@@ -1,0 +1,25 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/numlockx-1.2.tar.bz2
+
+[vars]
+filesize=68264
+sha512=2441b427aa0aed2109fe34f7c3e2241b75c73f5d36af7dd4c741502f7bfb357bca9d117f0543eb218f52288080b6a8b1bf348cb56f06e1ca0d61d9b509e73bb6
+desc="A small tool to start X with NumLock turned on"
+
+[deps]
+libx11
+libxtst
+libxext
+inputproto
+xextproto
+kbproto
+xproto
+
+[build]
+CFLAGS="-D_GNU_SOURCE $optcflags" \
+LDFLAGS="$optldflags" \
+  ./configure --prefix="$butch_prefix" $xconfflags
+
+make -j$MAKE_THREADS
+make DESTDIR="$butch_install_dir" install
+
