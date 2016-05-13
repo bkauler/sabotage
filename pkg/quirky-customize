@@ -31,5 +31,10 @@ libiconv' > "$K"/../pkg/iconv
 echo '[deps]
 libusb' > "$K"/../pkg/libusbx
 
+#20160513
+#frustration trying to compile netpbm with libpng 1.5.x. major distros ubuntu/debian have stayed with 1.2.x...
+echo '[deps]
+libpng12' > "$K"/../pkg/libpng
+
 
 exit 0
