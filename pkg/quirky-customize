@@ -36,5 +36,9 @@ libusb' > "$K"/../pkg/libusbx
 echo '[deps]
 libpng12' > "$K"/../pkg/libpng
 
+#20160515
+#just want normal empty...
+echo '[deps]
+hicolor-icon-theme' > "$K"/../pkg/hicolor-icon-theme-fake
 
 exit 0

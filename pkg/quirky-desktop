@@ -133,6 +133,7 @@ gnome-menus
 xdg-puppy
 xcursorgen
 xcur2png
+xgamma
 network-tray
 powerapplet-tray
 freememapplet-tray
@@ -140,6 +141,9 @@ retrovol
 minixcal
 numlockx
 unclutter
+hicolor-icon-theme
+gif2lss
+gifsicle
 xarchive
 gtkdialog
 xdialog
@@ -148,3 +152,9 @@ glipper-lite
 pup-tools
 geany
 netpbm
+libevent
+icu
+libogg
+libvorbis
+libvpx
+firefox

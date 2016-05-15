@@ -8,6 +8,7 @@ disktype
 pciutils
 gnu-efi-libs
 nasm
+yasm
 syslinux6
 sysfsutils
 attr
@@ -81,6 +82,10 @@ dvd-close
 cddetect
 cddetect-quick
 bbc-provided
+modem-stats
+inotify-tools
+dosfstools
+unrar
 mp
 wpa-supplicant
 lynx
