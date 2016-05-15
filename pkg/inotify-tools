@@ -1,0 +1,20 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/alphabetical/i/inotify-tools-3.14.tar.gz
+
+[vars]
+filesize=358772
+sha512=6074d510e89bba5da0d7c4d86f2562c662868666ba0a7ea5d73e53c010a0050dd1fc01959b22cffdb9b8a35bd1b0b43c04d02d6f19927520f05889e8a9297dfb
+desc="Command line utilities for the Linux inotify system"
+
+[deps]
+
+
+[build]
+CFLAGS="$optcflags" \
+LDFLAGS="$optldflags" \
+  ./configure --prefix="$butch_prefix" $xconfflags
+
+make -j$MAKE_THREADS
+make DESTDIR="$butch_install_dir" install
+
+

@@ -1,0 +1,19 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/modem-stats-1.0.1.src.elf.tar.bz2
+
+[vars]
+filesize=51396
+sha512=57488d7e18602edcafc459e0741c1900fd33c1b4061714cee3306329257651c704136bc68ecce929d1a0a96424b1c8f72ca8ccb6c29939bc604f3bb513ebd5e8
+desc="Send Hayes commands to a serial or usb modem"
+tardir=modem-stats-1.0.1
+
+[deps]
+
+
+[build]
+
+gcc $optcflags -o modem-stats $optldflags modem-stats.c
+dest=$butch_install_dir$butch_prefix
+mkdir -p "$dest"/bin
+install -m755 -s modem-stats "$dest"/bin
+
