@@ -1,0 +1,17 @@
+[mirrors]
+https://www.x.org/releases/individual/app/xgamma-1.0.6.tar.bz2
+
+[vars]
+filesize=123105
+sha512=2d41798e15ac8c6f6731a2da29589207d936eaee1223ce6f3ca948e67d63c5c8b955d11c7db092dcd8c66a6209bd15c1de3dc1446dad4b4277134f010c6fc47a
+
+[deps]
+
+
+[build]
+CPPFLAGS="-D_GNU_SOURCE" CFLAGS="$optcflags" CXXFLAGS="$optcflags" \
+LDFLAGS="$optldflags -Wl,-rpath-link=$butch_root_dir$butch_prefix/lib" \
+  ./configure -C --prefix="$butch_prefix" $xconfflags
+make -j$MAKE_THREADS
+make DESTDIR="$butch_install_dir" install
+
