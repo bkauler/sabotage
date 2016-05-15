@@ -1,0 +1,20 @@
+[mirrors]
+http://www.lcdf.org/gifsicle/gifsicle-1.88.tar.gz
+
+[vars]
+filesize=564670
+sha512=4a54557d2a9acb4601151f7a266156ebd317bddb1255d84df042a62be0f57bd75ad8585794bd82081701977c84781696bb06565a3aa1709e0ef04ab89fb2df91
+desc="A command-line tool for creating, editing, and getting information about GIF images and animations"
+
+[deps]
+libx11
+giflib
+
+[build]
+#note, mtpaint will use this, if it exists, for creating gif animations.
+
+CFLAGS="$optcflags" LDFLAGS="$optldflags -Wl,-rpath-link=$butch_root_dir$butch_prefix/lib" \
+  ./configure -C --prefix="$butch_prefix" $xconfflags \
+  --enable-gifview --enable-gifdiff --disable-ungif --with-x
+make -j$MAKE_THREADS
+make DESTDIR="$butch_install_dir" install

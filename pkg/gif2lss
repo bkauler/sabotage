@@ -1,0 +1,22 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/gif2lss-0.4.tar.bz2
+
+[vars]
+filesize=43452
+sha512=2f6e604d9201e27c0744f50acf465e5789e474347182f5a21378776b58e9e7102265e3e7a5ca29dad5501b8e9ecfe8b653381e8e9383a8215ef22752604b09cc
+desc="A utility for converting 16 color gif images to LSS encoding (Syslinux)"
+
+[deps]
+
+
+[build]
+sed -i -e "s%^CFLAGS =%CFLAGS = -fPIC ${optcflags} %" gif_lib/Makefile
+sed -i -e "s%^CFLAGS =%CFLAGS = -fPIC ${optcflags} %" Makefile
+sed -i -e "s%^LDFLAGS =.*%LDFLAGS = ${optldflags}%" Makefile
+
+make
+
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p "$dest"/bin
+install -m755 -s gif2lss "$dest"/bin
+
