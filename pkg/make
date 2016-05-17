@@ -6,7 +6,7 @@ desc='the standard build tool for *nix source packages'
 [deps]
 kernel-headers
 
-[deps.stage0]
+[deps.host]
 stage0-musl
 
 [mirrors]
