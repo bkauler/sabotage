@@ -1,0 +1,23 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/alphabetical/w/woofs-20160515.tar.gz
+
+[vars]
+filesize=6032304
+sha512=423933fe6d9389748a04f58c2c77ce7d89b309b7da0c27a26fb06ce68b10fed7b83282e063c289ac2becacff9ce11e64569fb4b6382b63545ff65ca8684c6384
+tardir=woofs
+desc="Infrastructure and scripts to build Quirky Linux distribution"
+
+[deps]
+
+
+[build]
+#this provides the infrastructure for building a Quirky Linux distribution.
+
+dest="$butch_install_dir""$butch_prefix"
+touch "$dest"/xxxxxxx
+rm -rf "$dest"/*
+cp -a * "$dest"/
+
+ln -s -r "$dest"/create-quirky "$R"/sbin/create-quirky
+
+exit 0
