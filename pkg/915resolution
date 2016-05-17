@@ -1,0 +1,22 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/915resolution-0.5.3.tar.bz2
+
+[vars]
+filesize=24203
+sha512=d8282885cb6a42845bd98936f318c36872a7406781e943aa1b096f4752b074e1b5089f6be4c279770df00f4310da55fce865851aee342809b2e1a3b8a4f1713c
+desc="Intel Video BIOS Hack to tweak the BIOS resolution list"
+
+[deps]
+
+
+[build]
+patch -p1 < "$K"/915resolution-puppy-20120521.patch
+
+[ -f 915resolution ] && rm -f 915resolution
+[ -f 915resolution.o ] && rm -f 915resolution.o
+
+gcc -o 915resolution $optcflags $optldflags 915resolution.c
+
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p "$dest"/bin
+install -m755 -s 915resolution "$dest"/bin

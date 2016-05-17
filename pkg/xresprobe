@@ -1,0 +1,61 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/xresprobe-0.4.24ubuntu9.tar.bz2
+
+[vars]
+filesize=139204
+sha512=07f9f6e2f405c019f345cecf693a3203558e074b95568eb1d57b5fc9f25b70ccbf541f7607c9748c68f765386d65a83ae3d20f0a1d445ac97d7cd52f6791b22e
+desc="Contains the 'ddcprobe' utility, which performs a DDC probe to the monitor. Only works on x86 and powerpc"
+
+[deps]
+
+
+[build]
+
+case $A in
+ i386)
+  cd ddcprobe
+  gcc -W -Wall  -g -O2    -c -o vesamode.o vesamode.c
+  gcc -W -Wall  -g -O2    -c -o common.o common.c
+  gcc -W -Wall  -g -O2    -c -o x86-common.o x86-common.c
+  gcc -W -Wall  -g -O2    -c -o lrmi.o lrmi.c
+  gcc -W -Wall  -g -O2    -c -o vbe.o vbe.c
+  gcc -W -Wall  -g -O2    -c -o ddcprobe.o ddcprobe.c
+  gcc -W -Wall  -g -O2  -o ddcprobe vesamode.o common.o x86-common.o lrmi.o vbe.o ddcprobe.o
+  strip ddcprobe
+  cd ..
+ ;;
+ x86_64)
+  cd ddcprobe
+  gcc -W -Wall  -g -O2    -c -o vesamode.o vesamode.c
+  gcc -W -Wall  -g -O2    -c -o common.o common.c
+  gcc -W -Wall  -g -O2    -c -o x86-common.o x86-common.c
+  gcc -W -Wall  -g -O2    -c -o vbe.o vbe.c
+  gcc -W -Wall  -g -O2    -c -o thunk.o thunk.c
+  cd x86emu
+  gcc -g -O -Wall -c -D__DRIVER__ -DFORCE_POST -D_CEXPORT= -DNO_LONG_LONG -DDEBUG -I. -Ix86emu -I../../include -I../x86emu_include debug.c
+  gcc -g -O -Wall -c -D__DRIVER__ -DFORCE_POST -D_CEXPORT= -DNO_LONG_LONG -DDEBUG -I. -Ix86emu -I../../include -I../x86emu_include decode.c
+  gcc -g -O -Wall -c -D__DRIVER__ -DFORCE_POST -D_CEXPORT= -DNO_LONG_LONG -DDEBUG -I. -Ix86emu -I../../include -I../x86emu_include fpu.c
+  gcc -g -O -Wall -c -D__DRIVER__ -DFORCE_POST -D_CEXPORT= -DNO_LONG_LONG -DDEBUG -I. -Ix86emu -I../../include -I../x86emu_include ops.c
+  gcc -g -O -Wall -c -D__DRIVER__ -DFORCE_POST -D_CEXPORT= -DNO_LONG_LONG -DDEBUG -I. -Ix86emu -I../../include -I../x86emu_include ops2.c
+  gcc -g -O -Wall -c -D__DRIVER__ -DFORCE_POST -D_CEXPORT= -DNO_LONG_LONG -DDEBUG -I. -Ix86emu -I../../include -I../x86emu_include prim_ops.c
+  gcc -g -O -Wall -c -D__DRIVER__ -DFORCE_POST -D_CEXPORT= -DNO_LONG_LONG -DDEBUG -I. -Ix86emu -I../../include -I../x86emu_include sys.c
+  ar rv libx86emu.a debug.o decode.o fpu.o ops.o ops2.o prim_ops.o sys.o
+  cd ..
+  gcc -W -Wall  -g -O2    -c -o ddcprobe.o ddcprobe.c
+  gcc -W -Wall  -g -O2  -o ddcprobe vesamode.o common.o x86-common.o vbe.o thunk.o x86emu/libx86emu.a ddcprobe.o 
+  gcc -W -Wall  -g -O2    -c -o ddcxinfo.o ddcxinfo.c
+  gcc -W -Wall  -g -O2  -o ddcxinfo vesamode.o common.o x86-common.o vbe.o thunk.o x86emu/libx86emu.a ddcxinfo.o 
+  strip ddcprobe
+  cd ..
+ ;;
+ *)
+  cd ddcprobe
+  echo '#!/bin/sh
+echo "oem: armsystem"' > ddcprobe
+  cd ..
+ ;;
+esac
+
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p "$dest"/bin
+install -m755 ddcprobe/ddcprobe "$dest"/bin
