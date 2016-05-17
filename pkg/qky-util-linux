@@ -15,30 +15,39 @@ zlib
 #this is done from years of experience with puppy linux, where the busybox applets
 #were found to be inadequate.
 #this also installs libblkid and libuuid. those in e2fsprogs are disabled.
+#20160516: --disable-all-programs, followed by --enable-<name> is supposed to work, but doesn't,
+# so have to compile everything, then install, then delete what i don't want.
 
 patch -p1 < "$K"/util-linux-fix-nls-disabled.patch
 
+#20160516 'more', 'pg' do not compile...
 CFLAGS="-D_GNU_SOURCE $optcflags" \
 LDFLAGS="$optldflags -lcurses -lterminfo" \
 ./configure -C \
-  --prefix="$butch_prefix" --with-ncurses --enable-shared --enable-static  \
+  --prefix="$butch_prefix" --with-ncurses --enable-shared --disable-static  \
   --disable-silent-rules --disable-nls --disable-colors-default --without-udev \
   --disable-use-tty-group --without-python --without-readline \
-  --disable-all-programs \
   --enable-libmount --enable-libuuid --enable-libblkid --enable-libsmartcols \
-  --enable-libfdisk \
-  --enable-addpart --enable-cfdisk --enable-col --enable-delpart --enable-eject \
-  --enable-fdformat --enable-fdisk --enable-flock --enable-fsck --enable-getopt \
-  --enable-hwclock --enable-ldattach --enable-losetup --enable-mkfs --enable-mkswap \
-  --enable-mount --enable-partx --enable-readprofile --enable-rename \
-  --enable-resizepart --enable-rev --enable-rtcwake --enable-setarch --enable-setsid \
-  --enable-swapoff --enable-swapon --enable-umount --enable-uuidd --enable-whereis
+  --enable-libfdisk --disable-more --disable-pg
 
-make -j$MAKE_THREADS || exit 1
+make -j$MAKE_THREADS
 
 make DESTDIR="$butch_install_dir" install
 
-mv -f ${butch_install_dir}/bin/mount ${butch_install_dir}/bin/mount-FULL
-mv -f ${butch_install_dir}/bin/umount ${butch_install_dir}/bin/umount-FULL
-mv -f ${butch_install_dir}/sbin/losetup ${butch_install_dir}/sbin/losetup-FULL
+#20160516 now keep want i want...
+WHATIWANT=' addpart cfdisk col delpart eject fdformat fdisk flock fsck getopt hwclock ldattach losetup mkfs mkswap mount partx readprofile rename resizepart rev rtcwake setarch setsid swapoff swapon umount uuidd whereis '
+dest="$butch_install_dir""$butch_prefix"
+ALLINSTALLED="$(find "$dest"/bin "$dest"/sbin -maxdepth 1 -type f | tr '\n' ' ')"
+for AINSTALLED in $ALLINSTALLED
+do
+ [ ! -f $AINSTALLED ] && continue
+ ANAME="$(basename $AINSTALLED)"
+ [ "$(echo -n "$WHATIWANT" | grep " ${ANAME} ")" != "" ] && continue
+ rm -f $AINSTALLED
+done
+
+#puppy-heritage thing...
+mv -f ${dest}/bin/mount ${dest}/bin/mount-FULL
+mv -f ${dest}/bin/umount ${dest}/bin/umount-FULL
+mv -f ${dest}/sbin/losetup ${dest}/sbin/losetup-FULL
 

@@ -29,12 +29,15 @@ make -j$MAKE_THREADS V=1
 make DESTDIR="$butch_install_dir" install
 
 #install fixes...
-if [ -d "$R"/opt/eudev/share/pkgconfig ];then
- mkdir -p "$R"/opt/eudev/lib/pkgconfig
- cp -a -f "$R"/opt/eudev/share/pkgconfig/* "$R"/opt/eudev/lib/pkgconfig/
- rm -rf "$R"/opt/eudev/share/pkgconfig
+dest="$butch_install_dir""$butch_prefix"
+if [ -d "$dest"/share/pkgconfig ];then
+ mkdir -p "$dest"/lib/pkgconfig
+ cp -a -f "$dest"/share/pkgconfig/* "$dest"/lib/pkgconfig/
+ rm -rf "$dest"/share/pkgconfig
 fi
-if [ -h "$R"/opt/eudev/sbin/udevadm ];then
- ln -snf ../bin/udevadm "$R"/opt/eudev/sbin/udevadm
-fi
+[ -h "$dest"/sbin/udevadm ] && rm -f "$dest"/sbin/udevadm
+
+#remove all the rules, they are supplied by quirky rootfs-skeleton...
+#gotta get rid of these anyway, as they totally stuff up module loading...
+rm -f "$dest"/lib/udev/rules.d/*.rules
 

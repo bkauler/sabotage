@@ -67,6 +67,6 @@ case "$A" in i[3-6]86) target=efi32 ;; esac
 make $PREFIXED_PATHS AUXDIR="$butch_prefix/lib/syslinux" INSTALLROOT="$butch_install_dir" $target installer
 make $PREFIXED_PATHS AUXDIR="$butch_prefix/lib/syslinux" INSTALLROOT="$butch_install_dir" -j1 $target install
 
-##we don't have mtools, need to do this...
-#cp -a -f linux/syslinux-nomtools "$R"/opt/syslinux6/bin/syslinux
-#...um, not there. used to work with v4.
+#we don't have mtools, need to do this...
+dest="$butch_install_dir""$butch_prefix"
+cp -a -f bios/linux/syslinux-nomtools "$dest"/bin/syslinux

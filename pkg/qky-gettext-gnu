@@ -1,9 +1,9 @@
 [mirrors]
-http://ftp.gnu.org/pub/gnu/gettext/gettext-0.10.40.tar.gz
+http://ftp.gnu.org/pub/gnu/gettext/gettext-0.13.1.tar.gz
 
 [vars]
-filesize=1352976
-sha512=307c3ab4aaf044c1b0426686c6233e997d08cd590dadc3c68b76d81074350db6d653fc6b192c6b26f7d0efea450485a6c18ebb1433c83ae4375073c296f356a4
+filesize=6458256
+sha512=178c33ae34b37fb1ded233b94cac7549bcb6319818b10f416c6edbbd5385052273faddd02cfee9f93992f7ffed59b016a4aa2e5bdcd807f8b0304843ba6a6121
 
 [deps]
 curses
@@ -13,24 +13,14 @@ dynamic-toolchain
 
 [build]
 #compiling a very old version of gnu gettext. deliberately.
+#first, I tried 0.10.40, oldest available, but it is missing gettext.sh and envsubst.
+#0.13.1 was released in 2003. Compiles in less than a minute.
 
 #want libintl.a only...
 LDFLAGS="$optldflags" CFLAGS="$optcflags" \
   ./configure --prefix="$butch_prefix" \
   --disable-shared --enable-static
 
-##msgfmt fails... NO, fixed below
-#sed -i -e 's% msgfmt % %' src/Makefile
-#sed -i -e 's%^msgfmt$(EXEEXT) msgmerge$(EXEEXT) %msgmerge$(EXEEXT) %' src/Makefile
-##msgunfmt fails...
-#sed -i -e 's% msgunfmt % %' src/Makefile
-#sed -i -e 's%^msgmerge$(EXEEXT) msgunfmt$(EXEEXT) %msgmerge$(EXEEXT) %' src/Makefile
-
-#getline.h not needed, conflicts with /usr/include/stdio.h
-sed -i '/^#include "getline.h"/d' src/msgfmt.c
-sed -i '/^#include "getline.h"/d' src/msgunfmt.c
-sed -i '/^#include "getline.h"/d' src/xgettext.c
-sed -i '/^#include "getline.h"/d' src/msgcomm.c
 
 make -j$MAKE_THREADS
 
@@ -48,3 +38,5 @@ rm -rf "$dest"/share
 [ -e "$R"/bin/msgfmt ] && rm -f "$dest"/bin/msgfmt
 [ -e "$R"/bin/msgmerge ] && rm -f "$dest"/bin/msgmerge
 
+#does it matter?, this isn't executable...
+chmod 755 "$dest"/bin/gettext.sh
