@@ -19,14 +19,14 @@ pkgconf
 patch -p1 < "$K"/f2fs-tools-fix-missing-queue.h.patch
 #pkgconf or pkg-config
 
-#want to compile statically:
-echo 'mkfs_f2fs_LDFLAGS = -all-static' >> mkfs/Makefile.am
-echo 'fsck_f2fs_LDFLAGS = -all-static' >> fsck/Makefile.am
+#if want to compile statically (also -static in LDFLAGS):
+#echo 'mkfs_f2fs_LDFLAGS = -all-static' >> mkfs/Makefile.am
+#echo 'fsck_f2fs_LDFLAGS = -all-static' >> fsck/Makefile.am
 
 autoreconf --install
 
 CFLAGS="$optcflags" \
-  LDFLAGS="$optldflags -static" \
+  LDFLAGS="$optldflags" \
     ./configure --prefix="$butch_prefix" $xconfflags \
       --disable-shared --enable-static
 make -j$MAKE_THREADS

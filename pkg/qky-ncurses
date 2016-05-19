@@ -10,18 +10,39 @@ desc="The ncurses (new curses) library"
 
 
 [build]
-#see how this goes. have compiled 'curses' in 'quirky-core', compiling 'qky-ncurses'
-# later in 'quirky-cli'. reason, want proper wide-char libs.
+#note, see quirky-customize, now using pkg ncurses instead of pkg curses.
 
 CFLAGS="$optcflags" LDFLAGS="$optldflags" \
   ./configure --prefix="$butch_prefix" $xconfflags \
-  --without-ada --without-cxx --without-manpages --without-tests \
+  --without-ada --without-manpages --without-tests \
   --enable-pc-files --with-shared --without-debug --without-libtool \
-  --enable-symlinks --enable-widec --enable-ext-colors \
+  --enable-symlinks --enable-widec \
   --enable-sigwinch --enable-hard-tabs --enable-colorfgbg \
-  --with-termlib --with-normal
+  --with-normal
 
 make -j$MAKE_THREADS || exit 1
 
 make V=1 DESTDIR="$butch_install_dir" install
 
+#LFS has hack for 8-bit curses: http://www.linuxfromscratch.org/lfs/view/development/chapter06/ncurses.html
+dest="$butch_install_dir""$butch_prefix"
+for lib in ncurses form panel menu ; do
+    rm -f                    "$dest"/lib/lib${lib}.so
+    echo "INPUT(-l${lib}w)" > "$dest"/lib/lib${lib}.so
+    ln -sfv ${lib}w.pc        "$dest"/lib/pkgconfig/${lib}.pc
+done
+rm -f                     "$dest"/lib/libcursesw.so
+echo "INPUT(-lncursesw)" > "$dest"/lib/libcursesw.so
+ln -sfv libncurses.so      "$dest"/lib/libcurses.so
+
+#a problem, many recipes have explicit "-lterminfo". I previously specified separate
+#terminfo lib, by --with-termlib, however, it is named libtinfo.so, created a symlink.
+#however have now removed separate terminfo, just put in a dummy link...
+ln -s libcurses.so "$dest"/lib/libterminfo.so
+#...good, cmake failed before, now builds.
+
+#ncurses is so incredibly confusing. many apps expect headers in /include...
+mv -f "$dest"/include/ncursesw/* "$dest"/include/
+rmdir "$dest"/include/ncursesw
+[ ! -h "$R"/include/ncursesw ] && [ -d "$R"/include/ncursesw ] && rm -rf "$R"/include/ncursesw
+ln -snf . "$R"/include/ncursesw

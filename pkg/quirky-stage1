@@ -1,5 +1,4 @@
 [deps]
-jobflow
 sabotage-core
 kbd
 9base
@@ -14,6 +13,7 @@ man
 zlib
 binutils
 patch
+woofs
 
 [build]
 if [ -d "$butch_root_dir""$butch_staging_dir"/stage0 ] ; then

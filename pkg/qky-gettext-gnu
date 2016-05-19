@@ -16,27 +16,29 @@ dynamic-toolchain
 #first, I tried 0.10.40, oldest available, but it is missing gettext.sh and envsubst.
 #0.13.1 was released in 2003. Compiles in less than a minute.
 
-#want libintl.a only...
-LDFLAGS="$optldflags" CFLAGS="$optcflags" \
+#want libintl.a only... NO, want a stub for libintl.a, have created a separate pkg, gettext-tiny.
+LDFLAGS="$optldflags -fPIC" CFLAGS="$optcflags -fPIC" \
   ./configure --prefix="$butch_prefix" \
-  --disable-shared --enable-static
+  --disable-shared --enable-static --disable-nls
 
 
 make -j$MAKE_THREADS
 
-#have to run this, then delete everything else afterward...
 make install DESTDIR="$butch_install_dir"
 
 dest="$butch_install_dir""$butch_prefix"
-rm -rf "$dest"/doc
-rm -rf "$dest"/include
-rm -rf "$dest"/info
-rm -rf "$dest"/lib
-rm -rf "$dest"/man
-rm -rf "$dest"/share
-#if already installed 'gettext' (gettext-tiny), do not overwrite...
-[ -e "$R"/bin/msgfmt ] && rm -f "$dest"/bin/msgfmt
-[ -e "$R"/bin/msgmerge ] && rm -f "$dest"/bin/msgmerge
+
+#20160517 NO. see quirky-customize, now using gettext-gnu instead of gettext(-tiny)
+#after install, then delete everything else afterward...
+#rm -rf "$dest"/doc
+#rm -rf "$dest"/include
+#rm -rf "$dest"/info
+#rm -rf "$dest"/lib
+#rm -rf "$dest"/man
+#rm -rf "$dest"/share
+##if already installed 'gettext' (gettext-tiny), do not overwrite...
+#[ -e "$R"/bin/msgfmt ] && rm -f "$dest"/bin/msgfmt
+#[ -e "$R"/bin/msgmerge ] && rm -f "$dest"/bin/msgmerge
 
 #does it matter?, this isn't executable...
 chmod 755 "$dest"/bin/gettext.sh

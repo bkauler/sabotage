@@ -36,9 +36,17 @@ libusb' > "$K"/../pkg/libusbx
 echo '[deps]
 libpng12' > "$K"/../pkg/libpng
 
-#20160515
-#just want normal empty...
+#20160515 just want normal empty...
 echo '[deps]
 hicolor-icon-theme' > "$K"/../pkg/hicolor-icon-theme-fake
+
+#20160517 now using ncurses, not (bsd) curses...
+echo '[deps]
+ncurses' > "$K"/../pkg/curses
+
+#20160517 now using gettext-gnu, not gettext(-tiny)...
+echo '[deps]
+gettext-gnu' > "$K"/../pkg/gettext
+
 
 exit 0

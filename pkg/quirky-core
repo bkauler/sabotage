@@ -1,5 +1,5 @@
 [deps]
-quirky-customize
+quirky-busybox
 libatomic-ops
 pkgconf
 curses
@@ -20,7 +20,8 @@ readline
 expat
 libiconv
 texinfo
-gettext
+gettext-gnu
+gettext-tiny
 file
 libffi
 findutils
@@ -42,4 +43,3 @@ unzip
 zip
 curl
 bash
-woofs

@@ -1,9 +1,9 @@
 [mirrors]
-http://distro.ibiblio.org/quirky/quirky6/sources/alphabetical/w/woofs-20160515.tar.gz
+http://distro.ibiblio.org/quirky/quirky6/sources/alphabetical/w/woofs-20160518.tar.gz
 
 [vars]
-filesize=6032304
-sha512=423933fe6d9389748a04f58c2c77ce7d89b309b7da0c27a26fb06ce68b10fed7b83282e063c289ac2becacff9ce11e64569fb4b6382b63545ff65ca8684c6384
+filesize=6037359
+sha512=3bfdba29425d67be41dadc31bcfd7ed18da0b8f9aaa688e95542437cbffb4f4b391ea223af678c03ed8b89c93206b1e519cd3ae1b1d410f134f50f57a280f40f
 tardir=woofs
 desc="Infrastructure and scripts to build Quirky Linux distribution"
 
@@ -18,6 +18,7 @@ touch "$dest"/xxxxxxx
 rm -rf "$dest"/*
 cp -a * "$dest"/
 
-ln -s -r "$dest"/create-quirky "$R"/sbin/create-quirky
+ln -s "$dest"/quirky-create-distro "$R"/bin/quirky-create-distro
+ln -s "$dest"/quirky-build-all "$R"/bin/quirky-build-all
 
 exit 0

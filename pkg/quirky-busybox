@@ -1120,6 +1120,8 @@ done
 for AAPPLET in ${NEWAPPLETS}
 do
  [ -e "$R"/opt/busybox/bin/${AAPPLET} ] && continue
+ #have already installed pkg 'patch', busybox patch is hopeless...
+ [ "$AAPPLET" == "patch" ] && continue
  echo '#!/bin/busybox' > "$R"/opt/busybox/bin/${AAPPLET}
  chmod 755 "$R"/opt/busybox/bin/${AAPPLET}
  ln -snf ../opt/busybox/bin/${AAPPLET} "$R"/bin/${AAPPLET}

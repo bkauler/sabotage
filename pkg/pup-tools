@@ -24,18 +24,36 @@ gcc vercmp.c -o vercmp
 gcc truncate.c -o truncate
 cd ..
 
-dest="$butch_install_dir""$butch_prefix"
-mkdir "$dest"/sbin
-for AEXE in debdb2pupdb find_cat pngoverlay popup proxy-setup pup_event_frontend_d pup_event_ipc welcome1stboot
+mkdir -p "$R"/opt/pup_event
+for AEXE in pup_event_frontend_d pup_event_ipc
 do
- install -m755 -s bacon/$AEXE "$dest"/sbin
+ install -m755 -s bacon/$AEXE "$R"/opt/pup_event
+done
+
+mkdir -p "$R"/opt/simple_network_setup
+for AEXE in proxy-setup
+do
+ install -m755 -s bacon/$AEXE "$R"/opt/simple_network_setup
+done
+
+mkdir -p "$R"/opt/petget
+for AEXE in debdb2pupdb find_cat
+do
+ install -m755 -s bacon/$AEXE "$R"/opt/petget
+done
+
+dest="$butch_install_dir""$butch_prefix"
+mkdir "$dest"/bin
+for AEXE in pngoverlay popup welcome1stboot
+do
+ install -m755 -s bacon/$AEXE "$dest"/bin
 done
 for AEXE in getcurpos
 do
- install -m755 -s gcc/$AEXE "$dest"/sbin
+ install -m755 -s gcc/$AEXE "$dest"/bin
 done
 for AEXE in printcols truncate vercmp
 do
- install -m755 -s diet/$AEXE "$dest"/sbin
+ install -m755 -s diet/$AEXE "$dest"/bin
 done
 

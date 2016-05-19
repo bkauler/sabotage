@@ -17,6 +17,7 @@ zlib
 #this also installs libblkid and libuuid. those in e2fsprogs are disabled.
 #20160516: --disable-all-programs, followed by --enable-<name> is supposed to work, but doesn't,
 # so have to compile everything, then install, then delete what i don't want.
+#20160518 want to compile f2fs-tools statically, need libuuid.a
 
 patch -p1 < "$K"/util-linux-fix-nls-disabled.patch
 
@@ -24,7 +25,7 @@ patch -p1 < "$K"/util-linux-fix-nls-disabled.patch
 CFLAGS="-D_GNU_SOURCE $optcflags" \
 LDFLAGS="$optldflags -lcurses -lterminfo" \
 ./configure -C \
-  --prefix="$butch_prefix" --with-ncurses --enable-shared --disable-static  \
+  --prefix="$butch_prefix" --with-ncurses --enable-shared --enable-static  \
   --disable-silent-rules --disable-nls --disable-colors-default --without-udev \
   --disable-use-tty-group --without-python --without-readline \
   --enable-libmount --enable-libuuid --enable-libblkid --enable-libsmartcols \

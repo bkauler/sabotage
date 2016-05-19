@@ -105,8 +105,6 @@ font-util
 libfontenc
 mkfontscale
 mkfontdir
-x11-font-dejavu
-x11-font-misc
 atk
 gdk-pixbuf
 gtk+2
@@ -121,7 +119,6 @@ xvid
 qpdf
 cups-filters
 gutenprint
-gettext-gnu
 jwm
 xclip
 bacon
