@@ -1,0 +1,35 @@
+[mirrors]
+http://ftp.gnu.org/gnu/bash/bash-4.3.30.tar.gz
+
+[vars]
+filesize=7977214
+sha512=76e5d91f0d29f857d5ab39423075ee4a577b59bae22f86cefef82c814f25d37456655e083e3cb116406856b192ca8b5749852baf7d01dbac491a2fb2e5ab7686
+desc="the bourne again shell. prerequisite to build lots of linux-centric sw."
+
+[deps]
+quirky-busybox
+
+[build]
+# FIXME: bash has a ton of configure tests with broken defaults
+# for crosscompiling. breakage could for example be introduced by
+# "checking for offset of exit status... 0" (due to crosscompile)
+# on a native x86_64 run we get 8 (bash_cv_wexitstatus_offset)
+[ -n "$CROSS_COMPILE" ] && \
+  xconfflags="--host=$($CC -dumpmachine|sed 's/musl/gnu/') \
+  --with-sysroot=$butch_root_dir"
+CFLAGS="$optcflags" LDFLAGS="$optldflags -static" \
+  ./configure -C --prefix="$butch_prefix" $xconfflags \
+  --without-bash-malloc \
+  --disable-rpath --enable-history bash_cv_getenv_redef=no \
+  --enable-job-control bash_cv_sys_named_pipes=yes \
+  --disable-nls
+#  --with-installed-readline ac_cv_rl_version=5.0 \
+make -j$MAKE_THREADS READLINE_LIB=lib/readline/libreadline.a
+make DESTDIR="$butch_install_dir" install
+
+#20160518 i need /bin/sh a symlink to bash (refer note in /etc/profile in /opt/woofs/rootfs-skeleton)
+dest="$butch_install_dir""$butch_prefix"
+ln -s bash "$dest"/bin/sh
+#...note, currently have a weird sequence in sabotage: busybox builds in stage0
+#   (or 1), then I build quirky-busybox (see meta-pkg quirky-core). Have to build
+#   bash afterward, so that sh will end up pointing to bash.

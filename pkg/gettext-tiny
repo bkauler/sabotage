@@ -1,0 +1,35 @@
+[mirrors]
+http://ftp.barfooze.de/pub/sabotage/tarballs/gettext-tiny-0.0.4.tar.bz2
+http://foss.aueb.gr/mirrors/linux/sabotage/tarballs/gettext-tiny-0.0.4.tar.bz2
+http://dl.2f30.org/mirrors/sabotage/tarballs/gettext-tiny-0.0.4.tar.bz2
+
+[vars]
+filesize=8874
+sha512=719a0fe328bc24ecd6af1b23fd4436f07258a4d598e434b98057735d2ad8e3fc5567374a2f4c8e9e1d0bd76b93ad6555a9d0c448f1429d56776ae9cbcff8235b
+
+[deps]
+gettext-gnu
+
+[build]
+#have qky-gettext-gnu, compiled without libintl.a
+#compiling gettext-tiny just for its libintl.a stub.
+
+patch -p1 < "$K"/gettext-tiny-noop.patch
+patch -p1 < "$K"/gettext-tiny-msgmerge-configure.patch
+echo prefix="$butch_prefix" > config.mak
+make -j$MAKE_THREADS
+
+#make DESTDIR="$butch_install_dir" install
+
+#now install just the bits we want...
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p "$dest"/include
+mkdir -p "$dest"/lib
+install -m644 include/libintl.h "$dest"/include
+install -m755 libintl.a "$dest"/lib
+
+#hmmm, glib does not like /bin/msgfmt from gettext-gnu.
+#this is a real hack, but install these from gettext-tiny...
+mkdir -p "$dest"/bin
+install -m755 -s msgfmt "$dest"/bin
+install -m755 -s msgmerge "$dest"/bin
