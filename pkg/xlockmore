@@ -1,0 +1,28 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/quirky6/sources/t2/april/xlockmore-5.31-patched.tar.bz2
+
+[vars]
+filesize=2011656
+sha512=c5abf8a29b9694ad522098bf88fe548db601b2ff5891523913b61e60ca3d0f94c918aa5a58cd57f1ad926c863cc56f6fce3b69c8458ec1f87d1f1f8e72184e71
+desc="Xlockmore is an alternative to xscreensaver"
+
+[deps]
+libx11
+
+[build]
+#this is a very cut-down build.
+
+CPPFLAGS="-D_GNU_SOURCE" CFLAGS="$optcflags" CXXFLAGS="$optcflags" \
+LDFLAGS="$optldflags -Wl,-rpath-link=$butch_root_dir$butch_prefix/lib" \
+  ./configure -C --prefix="$butch_prefix" $xconfflags \
+  --enable-xlockrc --without-motif --without-editres --without-gltt \
+  --without-ftgl --without-opengl --without-mesa --without-dtsaver \
+  --without-rplay --without-nas --enable-nice-only --without-gtk --without-gtk2
+
+make V=1 -j$MAKE_THREADS
+
+#make DESTDIR="$butch_install_dir" install
+#...doesn't understnad DESTDIR, do manually...
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p "$dest"/bin
+install -m755 -s xlock/xlock "$dest"/bin
