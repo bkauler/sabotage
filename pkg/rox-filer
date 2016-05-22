@@ -37,5 +37,7 @@ cp -a -f ROX-Filer/.DirIcon "$dest"/
 cp -a -f ROX-Filer/ROX "$dest"/
 cp -a -f ROX-Filer/Help "$dest"/
 
-ln -r -s "$dest"/ROX-Filer "$R"/bin/rox
-ln -r -s "$dest"/ROX-Filer "$R"/bin/ROX-Filer
+#ln -r -s "$dest"/ROX-Filer "$R"/bin/rox
+#...no, need to run AppRun, as it sets env. variable APP_DIR...
+echo "#!/bin/sh
+exec ${dest}/AppRun \$@" > "$R"/bin/rox

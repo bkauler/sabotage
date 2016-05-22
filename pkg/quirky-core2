@@ -1,7 +1,9 @@
 [deps]
 kernel
 
-
 [build]
-#note, aufs-utils is kernel-version-sensitive.
-#took out aufs-utils, as build broken.
+#note, pkg 'aufs-utils' is kernel-version-sensitive, and needs the kernel headers.
+#took out aufs-utils, as build broken. ...maybe fixed. ...no....
+#  /include/linux/aufs_type.h got installed by recipe 'qky-kernel' "make install_headers"
+#  but it is incorrect, normally gets modified. 
+
