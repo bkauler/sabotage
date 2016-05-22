@@ -183,7 +183,7 @@ start_build() {
 	$BINDIR/butch-merge $1 $BUTCH_BUILD_TEMPLATE > $scrname
         chmod +x $scrname
 	success=false
-        $scrname > $logname 2>&1 && success=true
+        $scrname </dev/null > $logname 2>&1 && success=true
 	$success && update_butchdb "$1" || info "WARNING: $1 failed to build! wait for other jobs to finish."
 	$success
 }
@@ -240,7 +240,7 @@ dlfails=0
 echo "*** buildqueue ***"
 for p in $buildlist ; do printf "%s\n" "$p" ; done
 
-while read line ; do
+while read line <&5 ; do
 	cnt=0
 	for foo in $line ; do
 		test $cnt = 0 && status="$foo"
@@ -249,6 +249,7 @@ while read line ; do
 	done
 	if [ "$status" != OK ] && [ "$status" != FAIL ] && [ "$status" != DONE ] ; then
 		printf "%s\n" "$line"
+		continue
 	fi
 	test "$status" = OK && add_downloaded "$pkg"
 	test "$status" = "FAIL" && add_dlerr "$pkg" && dlfails=$(($dlfails + 1)) && \
@@ -260,7 +261,7 @@ while read line ; do
 		wait $dlpid
 		break
 	}
-done <&5
+done
 echo "QUIT" >&4
 wait $hlppid
 # at this point the child processes are reaped, undo EXIT trap
