@@ -1,10 +1,11 @@
 [mirrors]
-http://distro.ibiblio.org/quirky/quirky6/sources/raw/pup-tools-20160521.tar.gz
+http://distro.ibiblio.org/quirky/quirky6/sources/easy/pup-tools-20160523.tar.gz
 
 [vars]
-filesize=27647
-sha512=806628018ace34805d0e36a1233c9a981d843a5c85f9cf33437865e58e1ad29f2f262abd5032119111db581cca6aac045008d027c90fa27588d2382926bf53de
-desc="Core utilities used in Puppy Linux and derivatives"
+filesize=27968
+sha512=ee3c7c2da07f5a296f680f08609bf61f8f26c92cf695b6da255c1c26514b0897a52b7cc9c3606df6978cfed86f12dda8a7f9510cb39386a9d1aa4dcddd917dbe
+desc="Core utilities used in Puppy Linux, Quirky Linux and Easy Linux (and derivatives)"
+tardir=pup-tools
 
 [deps]
 gtk+2

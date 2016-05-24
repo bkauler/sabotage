@@ -17,6 +17,13 @@ CFLAGS="$optcflags" \
   LDFLAGS="$optldflags" \
     ./configure --prefix="$butch_prefix" $xconfflags \
       --enable-shared --disable-static --with-readline
-make -j$MAKE_THREADS || exit 1
-make DESTDIR="$butch_install_dir" install
 
+make -j$MAKE_THREADS
+
+#make DESTDIR="$butch_install_dir" install
+#...no, it installs both bc and dc. In Puppy Linux, there are many scripts that
+#use dc from busybox, which works differently. must only install bc...
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p "$dest"/bin
+install -m755 -s bc/bc "$dest"/bin
+ 

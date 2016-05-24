@@ -41,3 +41,5 @@ cp -a -f ROX-Filer/Help "$dest"/
 #...no, need to run AppRun, as it sets env. variable APP_DIR...
 echo "#!/bin/sh
 exec ${dest}/AppRun \$@" > "$R"/bin/rox
+chmod 755 "$R"/bin/rox
+
