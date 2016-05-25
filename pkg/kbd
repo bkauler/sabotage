@@ -93,9 +93,11 @@ if $replace_stuff ; then
 
 # we can rm the original keymaps now to save space,
 # and everything else, except of "$fs"/share/kmap
+if $butch_do_custom_destdir ; then
 for i in bin share/consolefonts share/consoletrans share/keymaps share/man share/unimaps ; do
 	rm -rf "$fs"/"$i"
 done
+fi
 
 # slitaz comes with a user friendly keyboard switched script: http://trixarian.net/paste/9abcb
 # (/sbin/tazkeymap). this can serve as a template. for now, just use loadkmap < /share/kmap/layout.kmap
