@@ -104,7 +104,7 @@ if $butch_do_custom_destdir ; then
 		fi
 	fi
 else
-	butch_install_dir="$butch_root_dir"/
+	butch_install_dir="$butch_root_dir"
 fi
 [ -z "$butch_install_dir" ] || mkdir -p "$butch_install_dir"
 
