@@ -56,8 +56,6 @@ if $butch_do_custom_destdir ; then
 	[ -z "$butch_do_create_tarball" ] && butch_do_create_tarball=false
 	butch_do_separate_debug_info=true
 	[ -z "$butch_do_overwrite_on_copy" ] && butch_do_overwrite_on_copy=false
-else
-	butch_install_dir=
 fi
 
 
@@ -105,6 +103,8 @@ if $butch_do_custom_destdir ; then
 			rm -f "$filelist"
 		fi
 	fi
+else
+	butch_install_dir="$butch_root_dir"/
 fi
 [ -z "$butch_install_dir" ] || mkdir -p "$butch_install_dir"
 
