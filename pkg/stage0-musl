@@ -25,13 +25,21 @@ make install DESTDIR="$butch_install_dir"
 dest="$butch_install_dir""$butch_prefix"
 
 # generate a musl-gcc wrapper that is aware of our directory layout...
+if butch_do_custom_destdir ; then
 cat << EOF > "$dest"/bin/musl-gcc
 #!/bin/sh
 self=\`readlink -f "\$0"\`
 selfdir=\`dirname "\$self"\`/../../../bin
 exec "\$selfdir/rawcc" "\$@" -specs "\$selfdir/../lib/musl-gcc.specs"
 EOF
-
+else
+cat << EOF > "$dest"/bin/musl-gcc
+#!/bin/sh
+self=\`readlink -f "\$0"\`
+selfdir=\`dirname "\$self"\`
+exec "\$selfdir/rawcc" "\$@" -specs "\$selfdir/../lib/musl-gcc.specs"
+EOF
+fi
 chmod +x "$dest"/bin/musl-gcc
 
 # fix paths in spec file
