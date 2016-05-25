@@ -1103,28 +1103,44 @@ make V=1 \
 #installs to _install in source...
 make install
 
-#replace previous...
-cp -a -f _install/bin/busybox "$R"/opt/busybox/bin/
-
-NEWAPPLETS=" `find _install -type l | rev | cut -f 1 -d '/' | rev | tr '\n' ' ' | tr -d '['` "
-
-#remove invalid applets...
-for OLDAPPLET in `find "$R"/opt/busybox/bin -maxdepth 1 -type l | rev | cut -f 1 -d '/' | rev | tr '\n' ' ' | tr -d '['`
-do
- [ "$(echo -n "$NEWAPPLETS" | grep " ${OLDAPPLET} ")" != "" ] && continue
- rm -f "$R"/opt/busybox/bin/$OLDAPPLET
- rm -f "$R"/bin/$OLDAPPLET
-done
-
-#add new applets...
-for AAPPLET in ${NEWAPPLETS}
-do
- [ -e "$R"/opt/busybox/bin/${AAPPLET} ] && continue
- #have already installed pkg 'patch', busybox patch is hopeless...
- [ "$AAPPLET" == "patch" ] && continue
- echo '#!/bin/busybox' > "$R"/opt/busybox/bin/${AAPPLET}
- chmod 755 "$R"/opt/busybox/bin/${AAPPLET}
- ln -snf ../opt/busybox/bin/${AAPPLET} "$R"/bin/${AAPPLET}
-done
+if $butch_do_custom_destdir ;then
+ #replace previous... **TODO**don't assume /opt
+ cp -a -f _install/bin/busybox "$R"/opt/busybox/bin/
+ NEWAPPLETS=" `find _install -type l | rev | cut -f 1 -d '/' | rev | tr '\n' ' ' | tr -d '['` "
+ #remove invalid applets...
+ for OLDAPPLET in `find "$R"/opt/busybox/bin -maxdepth 1 -type l | rev | cut -f 1 -d '/' | rev | tr '\n' ' ' | tr -d '['`
+ do
+  [ "$(echo -n "$NEWAPPLETS" | grep " ${OLDAPPLET} ")" != "" ] && continue
+  rm -f "$R"/opt/busybox/bin/$OLDAPPLET
+  rm -f "$R"/bin/$OLDAPPLET
+ done
+ #add new applets...
+ for AAPPLET in ${NEWAPPLETS}
+ do
+  [ -e "$R"/opt/busybox/bin/${AAPPLET} ] && continue
+  #have already installed pkg 'patch', busybox patch is hopeless...
+  [ "$AAPPLET" == "patch" ] && continue
+  echo '#!/bin/busybox' > "$R"/opt/busybox/bin/${AAPPLET}
+  chmod 755 "$R"/opt/busybox/bin/${AAPPLET}
+  ln -snf ../opt/busybox/bin/${AAPPLET} "$R"/bin/${AAPPLET}
+ done
+else
+ #installing into / ...
+ OLDAPPLETS=" $("$R"/bin/busybox --list | tr '\n' ' ' | tr -d '[') "
+ cp -a -f _install/bin/busybox "$R"/bin/
+ NEWAPPLETS=" $("$R"/bin/busybox --list | tr '\n' ' ' | tr -d '[') "
+ #remove invalid applets...
+ for OLDAPPLET in ${OLDAPPLETS}
+ do
+  [ "$(echo -n "$NEWAPPLETS" | grep " ${OLDAPPLET} ")" != "" ] && continue
+  rm -f "$R"/bin/$OLDAPPLET
+ done
+ #add new applets...
+ for AAPPLET in ${NEWAPPLETS}
+ do
+  [ -e "$R"/bin/${AAPPLET} ] && continue
+  ln -snf busybox "$R"/bin/${AAPPLET}
+ done
+fi
 
 exit 0

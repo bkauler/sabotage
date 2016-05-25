@@ -17,6 +17,7 @@ zlib
 #this also installs libblkid and libuuid. those in e2fsprogs are disabled.
 #20160516: --disable-all-programs, followed by --enable-<name> is supposed to work, but doesn't,
 # so have to compile everything, then install, then delete what i don't want.
+# (peculiarity of util-linux, some binary executables are not created until "make install" is executed)
 #20160518 want to compile f2fs-tools statically, need libuuid.a
 
 patch -p1 < "$K"/util-linux-fix-nls-disabled.patch
@@ -33,22 +34,34 @@ LDFLAGS="$optldflags -lcurses -lterminfo" \
 
 make -j$MAKE_THREADS
 
-make DESTDIR="$butch_install_dir" install
-
-#20160516 now keep want i want...
-WHATIWANT=' addpart cfdisk col delpart eject fdformat fdisk flock fsck getopt hwclock ldattach losetup mkfs mkswap mount partx readprofile rename resizepart rev rtcwake setarch setsid swapoff swapon umount uuidd whereis '
-dest="$butch_install_dir""$butch_prefix"
-ALLINSTALLED="$(find "$dest"/bin "$dest"/sbin -maxdepth 1 -type f | tr '\n' ' ')"
-for AINSTALLED in $ALLINSTALLED
-do
- [ ! -f $AINSTALLED ] && continue
- ANAME="$(basename $AINSTALLED)"
- [ "$(echo -n "$WHATIWANT" | grep " ${ANAME} ")" != "" ] && continue
- rm -f $AINSTALLED
-done
-
-#puppy-heritage thing...
-mv -f ${dest}/bin/mount ${dest}/bin/mount-FULL
-mv -f ${dest}/bin/umount ${dest}/bin/umount-FULL
-mv -f ${dest}/sbin/losetup ${dest}/sbin/losetup-FULL
-
+if $butch_do_custom_destdir ;then
+ make DESTDIR="$butch_install_dir" install
+ #20160516 now keep want i want...
+ WHATIWANT=' addpart cfdisk col delpart eject fdformat fdisk flock fsck getopt hwclock ldattach losetup mkfs mkswap mount partx readprofile rename resizepart rev rtcwake setarch setsid swapoff swapon umount uuidd whereis '
+ dest="$butch_install_dir""$butch_prefix"
+ ALLINSTALLED="$(find "$dest"/bin "$dest"/sbin -maxdepth 1 -type f | tr '\n' ' ')"
+ for AINSTALLED in $ALLINSTALLED
+ do
+  [ ! -f $AINSTALLED ] && continue
+  ANAME="$(basename $AINSTALLED)"
+  [ "$(echo -n "$WHATIWANT" | grep " ${ANAME} ")" != "" ] && continue
+  rm -f $AINSTALLED
+ done
+ #puppy-heritage thing...
+ mv -f ${dest}/bin/mount ${dest}/bin/mount-FULL
+ mv -f ${dest}/bin/umount ${dest}/bin/umount-FULL
+ mv -f ${dest}/sbin/losetup ${dest}/sbin/losetup-FULL
+else
+ mkdir -p "$R"/opt/util-linux
+ make DESTDIR="$R"/opt/util-linux install
+ WHATIWANT=' addpart cfdisk col delpart eject fdformat fdisk flock fsck getopt hwclock ldattach losetup mkfs mkswap mount partx readprofile rename resizepart rev rtcwake setarch setsid swapoff swapon umount uuidd whereis '
+ for AWANT in $WHATIWANT
+ do
+  AFND="$(find "$R"/opt/util-linux/bin "$R"/opt/util-linux/sbin -maxdepth 1 -type f -name "$AWANT" | head -n 1)"
+  [ "$AFND" ] && cp -a -f --remove-destination $AFND "$R"/bin/
+ done
+ cp -a -f --remove-destination "$R"/opt/util-linux/bin/mount "$R"/bin/mount-FULL
+ cp -a -f --remove-destination "$R"/opt/util-linux/bin/umount "$R"/bin/umount-FULL
+ cp -a -f --remove-destination "$R"/opt/util-linux/sbin/losetup "$R"/bin/losetup-FULL
+ rm -rf "$R"/opt/util-linux
+fi

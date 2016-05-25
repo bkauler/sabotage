@@ -13,12 +13,15 @@ desc="Infrastructure and scripts to build Quirky Linux distribution"
 [build]
 #this provides the infrastructure for building a Quirky Linux distribution.
 
-dest="$butch_install_dir""$butch_prefix"
+#dest="$butch_install_dir""$butch_prefix"
+#...no, want to explicitly install to /opt...
+dest="$R"/opt/woofs
+mkdir -p "$R"/opt/woofs
 touch "$dest"/xxxxxxx
 rm -rf "$dest"/*
 cp -a * "$dest"/
 
-ln -s "$dest"/quirky-create-distro "$R"/bin/quirky-create-distro
-ln -s "$dest"/quirky-build-all "$R"/bin/quirky-build-all
+ln -s ../opt/woofs/quirky-create-distro "$R"/bin/quirky-create-distro
+ln -s ../opt/woofs/quirky-build-all "$R"/bin/quirky-build-all
 
 exit 0
