@@ -30,8 +30,10 @@ make install
 #HUG Highlevel Universal GUI library...
 wget http://www.basic-converter.org/hug.bac || exit 1
 mkdir temp1
-#need to install lib so bacon can find it...
-ln -s "$dest"/lib/libbacon.a "$R"/lib/libbacon.a
+if $butch_do_custom_destdir ; then
+ #need to install lib so bacon can find it...
+ ln -s "$dest"/lib/libbacon.a "$R"/lib/libbacon.a
+fi
 ./build/bacon -d temp1 -f hug.bac -o '-fPIC'
 cp -a -f temp1/hug.so "$dest"/lib/
 

@@ -1,9 +1,9 @@
 [mirrors]
-http://distro.ibiblio.org/quirky/quirky6/sources/easy/pup-tools-20160523.tar.gz
+http://distro.ibiblio.org/quirky/quirky6/sources/easy/pup-tools-20160527.tar.gz
 
 [vars]
-filesize=27968
-sha512=ee3c7c2da07f5a296f680f08609bf61f8f26c92cf695b6da255c1c26514b0897a52b7cc9c3606df6978cfed86f12dda8a7f9510cb39386a9d1aa4dcddd917dbe
+filesize=27989
+sha512=9c4af91a6ef9000055f9f1cd1e2ef82655e93ce4a68c7e07ff78839518cfd3c988c6d32304ec1e41a4f00771cbc9044b5cce26511684e6c4701c242b48404e00
 desc="Core utilities used in Puppy Linux, Quirky Linux and Easy Linux (and derivatives)"
 tardir=pup-tools
 
@@ -25,26 +25,26 @@ gcc vercmp.c -o vercmp
 gcc truncate.c -o truncate
 cd ..
 
-mkdir -p "$R"/opt/pup_event
+mkdir -p "$R"/local/pup_event
 for AEXE in pup_event_frontend_d pup_event_ipc
 do
- install -m755 -s bacon/$AEXE "$R"/opt/pup_event
+ install -m755 -s bacon/$AEXE "$R"/local/pup_event
 done
 
-mkdir -p "$R"/opt/simple_network_setup
+mkdir -p "$R"/local/simple_network_setup
 for AEXE in proxy-setup
 do
- install -m755 -s bacon/$AEXE "$R"/opt/simple_network_setup
+ install -m755 -s bacon/$AEXE "$R"/local/simple_network_setup
 done
 
-mkdir -p "$R"/opt/petget
+mkdir -p "$R"/local/petget
 for AEXE in debdb2pupdb find_cat
 do
- install -m755 -s bacon/$AEXE "$R"/opt/petget
+ install -m755 -s bacon/$AEXE "$R"/local/petget
 done
 
 dest="$butch_install_dir""$butch_prefix"
-mkdir "$dest"/bin
+mkdir -p "$dest"/bin
 for AEXE in pngoverlay popup welcome1stboot
 do
  install -m755 -s bacon/$AEXE "$dest"/bin
@@ -58,3 +58,4 @@ do
  install -m755 -s diet/$AEXE "$dest"/bin
 done
 
+exit 0

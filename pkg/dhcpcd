@@ -97,7 +97,11 @@ make -j$MAKE_THREADS || exit 1
 
 make V=1 DESTDIR="$butch_install_dir" install
 
-mv -f "$R"/opt/dhcpcd/usr/share "$R"/opt/dhcpcd/share
-rm -rf "$R"/opt/dhcpcd/usr
+dest="$butch_install_dir""$butch_prefix"
+if $butch_do_custom_destdir ;then
+ mv -f "$dest"/usr/share "$dest"/share
+ rm -rf "$dest"/usr
+fi
+
 mkdir -p "$R"/var/lib/dhcpcd
 

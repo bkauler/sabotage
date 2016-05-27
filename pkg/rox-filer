@@ -24,7 +24,11 @@ patch -p1 < "$K"/rox-filer-08-remove-user-msg.patch
 
 ./ROX-Filer/AppRun --compile
 
-dest="$butch_install_dir""$butch_prefix"
+#dest="$butch_install_dir""$butch_prefix"
+#special case...
+dest="$R"/local/rox-filer
+mkdir -p "$R"/local/rox-filer
+
 install -m755 ROX-Filer/ROX-Filer "$dest"
 install -m644 ROX-Filer/AppInfo.xml "$dest"
 install -m755 ROX-Filer/AppRun "$dest"

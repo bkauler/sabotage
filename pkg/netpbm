@@ -40,10 +40,22 @@ make
 make package pkgdir=/tmp/netpbm.bin
 
 dest="$butch_install_dir""$butch_prefix"
-{ echo -e "/tmp/netpbm.bin"
-  echo -e "$dest\n$dest/bin\n$dest/lib"
-  echo -e "n"
-  echo -e "$dest/lib\n$dest/share\n\n\n\nn\n" ; } | ./installnetpbm
+
+#this doesn't work when installing to /, easier to do it manually...
+#{ echo -e "/tmp/netpbm.bin"
+#  echo -e "$dest\n$dest/bin\n$dest/lib"
+#  echo -e "n"
+#  echo -e "$dest/lib\n$dest/share\n\n\n\nn\n" ; } | ./installnetpbm
+
+#only want a cutdown selection...
+mkdir -p "$dest"/bin
+for APPLET in anytopnm giftopnm jpegtopnm pamcomp pamcut pamdice pamfile pamrgbatopng pamscale pamslice pamsplit pamstretch pamtotiff pbmtext pbmtoxbm pgmramp pgmtopbm pgmtoppm pngtopnm pnmalias pnmcat pnmcolormap pnmconvol pnmcut pnmfile pnminterp pnmnlfilt pnmquant pnmremap pnmrotate pnmscale pnmsmooth pnmsplit pnmtojpeg pnmtopng pnmtops ppmdither ppmlabel ppmquant ppmrainbow ppmrough ppmtobmp ppmtogif ppmtojpeg ppmtopgm ppmtoxpm pstopnm tifftopnm xbmtopbm xpmtoppm xwdtopnm
+do
+ [ ! -e /tmp/netpbm.bin/bin/${APPLET} ] && continue
+ cp -a -f --remove-destination /tmp/netpbm.bin/bin/${APPLET} "$dest"/bin/
+done
+cp -a -f --remove-destination /tmp/netpbm.bin/lib/* "$dest"/lib/
+cp -a -f --remove-destination /tmp/netpbm.bin/misc/* "$dest"/share/
 
 rm -rf /tmp/netpbm.bin
 

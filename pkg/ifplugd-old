@@ -11,6 +11,8 @@ desc="Detect active ethernet. install 'ifstatus' only. old version."
 
 [build]
 #note, does not need libdaemon.
+#note, puppy linux uses both this old version and the newer ifplugstatus, as 
+#detecting active ethernet line sometimes detected by one not the other.
 
 patch -p1 < "$K"/ifplugd-0.28-unsigned-types.patch
 
@@ -21,5 +23,6 @@ CFLAGS="$optcflags" LDFLAGS="$optldflags" \
 make -j$MAKE_THREADS || exit 1
 
 #make V=1 DESTDIR="$butch_install_dir" install
-mkdir -p "$R"/opt/ifplugd-old/sbin
-cp -a -f src/ifstatus "$R"/opt/ifplugd-old/sbin/ifplugstatus-0.18
+dest="$butch_install_dir""$butch_prefix"
+mkdir -p "$dest"/bin
+cp -a -f src/ifstatus "$dest"/bin/ifplugstatus-0.18
