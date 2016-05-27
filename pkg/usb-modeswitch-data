@@ -10,5 +10,10 @@ sha512=e0ac311ae09dcf41b45e9434bf43e7964ec0a32ac68024216ddfb6d6fd9d3b484cbe663ec
 [build]
 patch -p1 < "$K"/usb-modeswitch-data.patch
 #sed -i 's,-t,-D,g' Makefile
+
+#got an install error: make: *** [rules-reload] Error 2
+#i don't think the the "rules-reload:" section is appropriate, this will disable it:
+sed -i 's%issue%xxxxxxxx%' Makefile
+
 make DESTDIR="$butch_install_dir$butch_prefix" V=1 -j$MAKE_THREADS \
      PREFIX="$butch_install_dir$butch_prefix" install
