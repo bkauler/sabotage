@@ -1,0 +1,94 @@
+[mirrors]
+https://archive.mozilla.org/pub/mozilla.org/seamonkey/releases/2.40/source/seamonkey-2.40.source.tar.xz
+
+[vars]
+filesize=193702432
+sha512=5a81a25c75af254f1508aa615a082f013d7d06950859822a134c51a0f4c12918081f69e7835dc85114e4285a67bc4be4d509db8374dec848f6381dfce447b696
+tardir=seamonkey-2.40
+
+[deps]
+gtk+2
+libevent
+icu
+hunspell
+libvpx
+unzip
+yasm
+sqlite
+
+[build]
+patch -p1 < "$K"/seamonkey-2.30-hotfix.patch
+patch -p1 < "$K"/seamonkey-uname-wrapper.patch
+patch -p1 < "$K"/seamonkey-virtualenv.patch
+
+dest="$butch_install_dir"
+
+cat > mozconfig << "EOF"
+mk_add_options MOZ_MAKE_FLAGS="-j1"
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/moz-build-dir
+mk_add_options MOZ_CO_PROJECT=suite
+ac_add_options --disable-dbus
+ac_add_options --disable-necko-wifi
+ac_add_options --disable-libnotify
+#ac_add_options --enable-gstreamer=1.0
+ac_add_options --disable-gstreamer
+ac_add_options --enable-system-hunspell
+#ac_add_options --enable-startup-notification
+ac_add_options --disable-pulseaudio
+ac_add_options --enable-system-sqlite
+ac_add_options --with-system-libevent
+ac_add_options --with-system-libvpx
+#ac_add_options --with-system-nspr
+#ac_add_options --with-system-nss
+ac_add_options --with-system-icu
+ac_add_options --prefix=${dest}/
+ac_add_options --localstatedir=/var
+ac_add_options --sysconfdir=/etc
+ac_add_options --host=${A}-pc-linux-gnu
+ac_add_options --enable-application=suite
+ac_add_options --disable-crashreporter
+ac_add_options --disable-accessibility
+ac_add_options --disable-updater
+ac_add_options --disable-tests
+ac_add_options --enable-libxul
+ac_add_options --enable-storage
+ac_add_options --disable-parental-controls
+ac_add_options --enable-places
+ac_add_options --disable-gnomevfs
+ac_add_options --disable-gconf
+ac_add_options --disable-gnomeui
+ac_add_options --enable-logging
+ac_add_options --disable-debug
+ac_add_options --disable-profilesharing
+ac_add_options --enable-mathml
+ac_add_options --enable-crypto
+ac_add_options --enable-ldap
+ac_add_options --disable-angle
+ac_add_options --enable-optimize='-Os'
+ac_add_options --enable-strip
+ac_add_options --enable-install-strip
+ac_add_options --with-default-mozilla-five-home=/lib/seamonkey
+ac_add_options --enable-jsd
+ac_add_options --enable-default-toolkit=cairo-gtk2
+ac_add_options --enable-gio
+#ac_add_options --enable-official-branding
+#ac_add_options --enable-safe-browsing
+#ac_add_options --enable-url-classifier
+#ac_add_options --enable-system-cairo
+ac_add_options --enable-system-ffi
+ac_add_options --enable-system-pixman
+ac_add_options --with-pthreads
+ac_add_options --with-system-bz2
+ac_add_options --without-system-jpeg
+ac_add_options --with-system-png
+ac_add_options --with-system-zlib
+EOF
+
+#LFS: fix for freetype 2.6+
+sed -i '/^ftglyph.h/ i ftfntfmt.h' mozilla/config/system-headers
+
+mkdir -vp mozilla/moz-build-dir
+
+make -f client.mk
+
+make -f client.mk install
