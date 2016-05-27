@@ -1138,7 +1138,7 @@ else
  #add new applets...
  for AAPPLET in ${NEWAPPLETS}
  do
-  [ -e "$R"/bin/${AAPPLET} ] && continue
+  #[ -e "$R"/bin/${AAPPLET} ] && continue
   ln -snf busybox "$R"/bin/${AAPPLET}
  done
 fi

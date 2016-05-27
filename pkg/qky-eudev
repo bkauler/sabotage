@@ -14,17 +14,31 @@ gperf
 
 [build]
 #eudev 3.1.5 is broken (doesn't compile libgudev), use 3.1.2.
+#removed, unrecognised options:
+# --with-firmware-path=, --disable-keymap, --with-modprobe=, --enable-modules, --enable-rule-generator
+
+#20160526 mystery, doing "butch rebuild", installing to /, compiled before, this time:
+# fatal error: scsi/scsi.h: No such file or directory
+#ok, scsi.h, scsi_ioctl.h, sg.h are installed by musl. they were there earlier.
+#...i think qky-kernel did it, have modified its recipe.
 
 CFLAGS="-D_GNU_SOURCE $optcflags" \
 LDFLAGS="$optldflags -lblkid" \
   ./configure -C --prefix="$butch_prefix" $xconfflags \
-  --with-rootlibdir=/lib --with-firmware-path=/lib/firmware/updates:/lib/firmware \
-  --enable-introspection=no --disable-selinux --with-rootprefix= --disable-gtk-doc \
-  --disable-manpages --disable-keymap --with-modprobe=/sbin/modprobe \
-  --enable-modules \
-  --enable-split-usr --exec-prefix= --enable-hwdb --enable-kmod --enable-rule-generator
+  --with-rootlibdir=/lib --enable-introspection=no --disable-selinux \
+  --with-rootprefix= --disable-gtk-doc --disable-manpages \
+  --enable-split-usr --exec-prefix= --enable-hwdb --enable-kmod
 
-make -j$MAKE_THREADS V=1
+#when install to /, src/eudev/Makefile has a problem:
+#install-exec-hook:
+#	if test "$(bindir)" != "$(sbindir)"; then \
+#		$(LN_S) -n -f $(bindir)/udevadm $(DESTDIR)$(sbindir)/udevadm; \
+#	fi
+if ! $butch_do_custom_destdir ; then
+ sed -i 's%$(LN_S)%true #ln -s%' src/udev/Makefile
+fi
+
+make -j$MAKE_THREADS
 
 make DESTDIR="$butch_install_dir" install
 

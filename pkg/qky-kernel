@@ -101,9 +101,14 @@ else
 fi
 cp -f $kpath $butch_root_dir/boot/vmlinuz
 
+#got a problem when install to /, is erasing existing header files.
+#solution seems to be to install to /opt...
+if ! $butch_do_custom_destdir ; then
+ butch_install_dir="$R"/opt/kernel-headers
+ mkdir -p "$R"/opt/kernel-headers
+fi
+
 # "build" headers into $dest/
-# we need to build them after the kernel because grsec assumes this order
-# otherwise some generated headers won't be found
 dest="$butch_install_dir""$butch_prefix"
 make V=1 ARCH=$A HOSTCFLAGS=-D_GNU_SOURCE INSTALL_HDR_PATH="$dest" \
   DISABLE_PAX_PLUGINS=y headers_install
@@ -111,8 +116,14 @@ make V=1 ARCH=$A HOSTCFLAGS=-D_GNU_SOURCE INSTALL_HDR_PATH="$dest" \
 # remove junk from kernel headers
 find "$dest"/include \( -name .install -o -name ..install.cmd \) -delete
 
-#create symlinks for headers...
-cp -a -s --remove-destination "$dest"/include/* "$R"/include/
+#install headers...
+if ! $butch_do_custom_destdir ; then
+ cp -a -f --remove-destination "$dest"/include/* "$R"/include/
+ rm -rf "$R"/opt/kernel-headers
+else
+ #create symlinks for headers...
+ cp -a -s --remove-destination "$dest"/include/* "$R"/include/
+fi
 
 $got_modules && depmod "$LINUX_VER"
 

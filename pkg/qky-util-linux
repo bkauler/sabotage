@@ -20,6 +20,13 @@ zlib
 # (peculiarity of util-linux, some binary executables are not created until "make install" is executed)
 #20160518 want to compile f2fs-tools statically, need libuuid.a
 
+#20160526 mystery, doing "butch rebuild", installing to /, compiled before, this time:
+# sys-utils/eject.c:41:23: fatal error: scsi/scsi.h: No such file or directory
+# yes, it is missing, which is very strange. anyway, do --disable-eject
+#hmmm, eudev also needs scsi/sci.h. something has wiped it out, when do a rebuild.
+#ok, scsi.h, scsi_ioctl.h, sg.h are installed by musl. they were there earlier.
+#...i think qky-kernel is the culprit, have modified its recipe.
+
 patch -p1 < "$K"/util-linux-fix-nls-disabled.patch
 
 #20160516 'more', 'pg' do not compile...
@@ -30,7 +37,7 @@ LDFLAGS="$optldflags -lcurses -lterminfo" \
   --disable-silent-rules --disable-nls --disable-colors-default --without-udev \
   --disable-use-tty-group --without-python --without-readline \
   --enable-libmount --enable-libuuid --enable-libblkid --enable-libsmartcols \
-  --enable-libfdisk --disable-more --disable-pg
+  --enable-libfdisk --disable-more --disable-pg --disable-eject
 
 make -j$MAKE_THREADS
 
@@ -63,5 +70,9 @@ else
  cp -a -f --remove-destination "$R"/opt/util-linux/bin/mount "$R"/bin/mount-FULL
  cp -a -f --remove-destination "$R"/opt/util-linux/bin/umount "$R"/bin/umount-FULL
  cp -a -f --remove-destination "$R"/opt/util-linux/sbin/losetup "$R"/bin/losetup-FULL
+ #and all the libs etc...
+ cp -a -f --remove-destination "$R"/opt/util-linux/include "$R"/
+ cp -a -f --remove-destination "$R"/opt/util-linux/lib "$R"/
+ cp -a -f --remove-destination "$R"/opt/util-linux/share "$R"/
  rm -rf "$R"/opt/util-linux
 fi

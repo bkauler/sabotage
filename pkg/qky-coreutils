@@ -58,7 +58,7 @@ else
   [ -e "$R"/bin/$APROG ] && busybox rm -f "$R"/bin/$APROG
   busybox cp -a src/$APROG "$R"/bin/
  done
- [ -f "$R"/bin/ginstall ] && [ ! -e "$R"/bin/install ] && busybox ln -snf ginstall "$R"/bin/install
+ [ -f "$R"/bin/ginstall ] && busybox ln -snf ginstall "$R"/bin/install
  #leave the busybox df in place (this is a puppy-heritage thing)...
  [ -f src/df ] && cp -a -f src/df "$R"/bin/df-FULL
 fi

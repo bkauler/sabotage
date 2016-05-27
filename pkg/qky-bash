@@ -29,7 +29,7 @@ make DESTDIR="$butch_install_dir" install
 
 #20160518 i need /bin/sh a symlink to bash (refer note in /etc/profile in /opt/woofs/rootfs-skeleton)
 dest="$butch_install_dir""$butch_prefix"
-ln -s bash "$dest"/bin/sh
+ln -snf bash "$dest"/bin/sh
 #...note, currently have a weird sequence in sabotage: busybox builds in stage0
 #   (or 1), then I build quirky-busybox (see meta-pkg quirky-core). Have to build
 #   bash afterward, so that sh will end up pointing to bash.
