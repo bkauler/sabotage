@@ -60,6 +60,7 @@ dvd+rw-tools
 ppp
 sysvinit-utils-cut
 gptfdisk
+queue-h
 f2fs-tools
 ethtool
 iptables

@@ -14,10 +14,9 @@ automake
 libtool
 m4
 pkgconf
+queue-h
 
 [build]
-patch -p1 < "$K"/f2fs-tools-fix-missing-queue.h.patch
-#pkgconf or pkg-config
 
 #if want to compile statically (also -static in LDFLAGS):
 #echo 'mkfs_f2fs_LDFLAGS = -all-static' >> mkfs/Makefile.am
