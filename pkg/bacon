@@ -26,30 +26,3 @@ make V=1 -j$MAKE_THREADS
 
 make install
 
-#grab some more stuff. unfortunately, can't build off-line!
-#HUG Highlevel Universal GUI library...
-wget http://www.basic-converter.org/hug.bac || exit 1
-mkdir temp1
-if $butch_do_custom_destdir ; then
- #need to install lib so bacon can find it...
- ln -s "$dest"/lib/libbacon.a "$R"/lib/libbacon.a
-fi
-./build/bacon -d temp1 -f hug.bac -o '-fPIC'
-cp -a -f temp1/hug.so "$dest"/lib/
-
-#to link hug.so as a shared lib, need this:
-wget http://www.basic-converter.org/hug_imports.bac
-sed -i -e 's%"\./hug\.so"%"/lib/hug.so"%' hug_imports.bac
-mkdir -p "$dest"/share/BaCon
-cp -a -f hug_imports.bac "$dest"/share/BaCon/
-#need to install this as well, as apps may include it, rather than use shared lib...
-cp -a -f hug.bac "$dest"/share/BaCon/
-
-#might as well grab these text-editor syntax highlighters...
-#for gtksourceview:
-wget http://www.basic-converter.org/bacon.lang
-cp -a -f bacon.lang "$dest"/share/BaCon/
-#for vim:
-wget http://www.basic-converter.org/bacon.vim
-cp -a -f bacon.vim "$dest"/share/BaCon/
-
