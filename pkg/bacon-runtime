@@ -1,0 +1,32 @@
+[mirrors]
+http://distro.ibiblio.org/quirky/easy/source/bacon-runtime-3.2.2.tar.gz
+
+[vars]
+filesize=24740
+sha512=61154d4b75713a0caeeac2af5f6c1e372a9525320677bf85fe085b05e4ecc1aedb5f24d41f32354be17fc4c42f9f8d4ef8ebe28300bd6ef08f09a9785fb5c98c
+desc="Provides HUG library and editor syntax highlighting, for BaCon"
+
+[deps]
+bacon
+
+[build]
+dest="$butch_install_dir""$butch_prefix"
+
+#HUG (Highlevel Universal GUI) library...
+mkdir temp1
+bacon -d temp1 -f hug.bac -o '-fPIC'
+cp -a -f temp1/hug.so "$dest"/lib/
+
+#to link hug.so as a shared lib, need this:
+sed -i -e 's%"\./hug\.so"%"/lib/hug.so"%' hug_imports.bac
+mkdir -p "$dest"/share/BaCon
+cp -a -f hug_imports.bac "$dest"/share/BaCon/
+#need to install this as well, as apps may include it, rather than use shared lib...
+cp -a -f hug.bac "$dest"/share/BaCon/
+
+#text-editor syntax highlighters...
+#for gtksourceview:
+cp -a -f bacon.lang "$dest"/share/BaCon/
+#for vim:
+cp -a -f bacon.vim "$dest"/share/BaCon/
+
