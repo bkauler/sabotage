@@ -1,0 +1,38 @@
+--- a/mozilla/toolkit/crashreporter/google-breakpad/src/client/linux/minidump_writer/minidump_writer.cc
++++ b/mozilla/toolkit/crashreporter/google-breakpad/src/client/linux/minidump_writer/minidump_writer.cc
+@@ -174,7 +174,7 @@
+ //   out: the minidump structure
+ //   info: the collection of register structures.
+ void CPUFillFromUContext(MDRawContextX86 *out, const ucontext *uc,
+-                         const struct _libc_fpstate* fp) {
++                         const struct _fpstate* fp) {
+   const greg_t* regs = uc->uc_mcontext.gregs;
+ 
+   out->context_flags = MD_CONTEXT_X86_FULL |
+@@ -274,7 +274,7 @@
+ }
+ 
+ void CPUFillFromUContext(MDRawContextAMD64 *out, const ucontext *uc,
+-                         const struct _libc_fpstate* fpregs) {
++                         const struct _fpstate* fpregs) {
+   const greg_t* regs = uc->uc_mcontext.gregs;
+ 
+   out->context_flags = MD_CONTEXT_AMD64_FULL;
+@@ -341,7 +341,7 @@
+ }
+ 
+ void CPUFillFromUContext(MDRawContextARM* out, const ucontext* uc,
+-                         const struct _libc_fpstate* fpregs) {
++                         const struct _fpstate* fpregs) {
+   out->context_flags = MD_CONTEXT_ARM_FULL;
+ 
+   out->iregs[0] = uc->uc_mcontext.arm_r0;
+@@ -1480,7 +1480,7 @@
+   const char* path_;  // Path to the file where the minidum should be written.
+ 
+   const struct ucontext* const ucontext_;  // also from the signal handler
+-  const struct _libc_fpstate* const float_state_;  // ditto
++  const struct _fpstate* const float_state_;  // ditto
+   LinuxDumper* dumper_;
+   MinidumpFileWriter minidump_writer_;
+   off_t minidump_size_limit_;

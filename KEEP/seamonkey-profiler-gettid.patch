@@ -1,0 +1,13 @@
+--- a/mozilla/tools/profiler/lul/LulMain.cpp
++++ b/mozilla/tools/profiler/lul/LulMain.cpp
+@@ -13,6 +13,9 @@
+ #include <algorithm>  // std::sort
+ #include <string>
+ 
++#include <sys/syscall.h>
++#define gettid() syscall(SYS_gettid)
++
+ #include "mozilla/Assertions.h"
+ #include "mozilla/ArrayUtils.h"
+ #include "mozilla/DebugOnly.h"
+

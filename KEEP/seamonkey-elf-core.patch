@@ -1,0 +1,10 @@
+--- a/mozilla/toolkit/crashreporter/google-breakpad/src/common/linux/elf_core_dump.h
++++ b/mozilla/toolkit/crashreporter/google-breakpad/src/common/linux/elf_core_dump.h
+@@ -36,6 +36,7 @@
+ #include <elf.h>
+ #include <link.h>
+ #include <stddef.h>
++#include <sys/reg.h>
+ 
+ #include "common/memory_range.h"
+ 
