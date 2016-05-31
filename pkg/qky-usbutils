@@ -29,6 +29,6 @@ mkdir -p "$dest"/lib/pkgconfig
 mv "$dest"/share/pkgconfig/* "$dest"/lib/pkgconfig/
 rm -rf "$dest"/share/pkgconfig
 
-mkdir -p "$dest"/share
-wget http://www.linux-usb.org/usb.ids -O "$dest"/share/usb.ids
-[ -f "$dest"/share/usb.ids.gz ] && rm -f "$dest"/share/usb.ids.gz
+#mkdir -p "$dest"/share
+#wget http://www.linux-usb.org/usb.ids -O "$dest"/share/usb.ids
+#[ -f "$dest"/share/usb.ids.gz ] && rm -f "$dest"/share/usb.ids.gz

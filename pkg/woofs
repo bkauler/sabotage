@@ -21,7 +21,7 @@ touch "$dest"/xxxxxxx
 rm -rf "$dest"/*
 cp -a * "$dest"/
 
-ln -s ../opt/woofs/quirky-create-distro "$R"/bin/quirky-create-distro
-ln -s ../opt/woofs/quirky-build-all "$R"/bin/quirky-build-all
+ln -s ../opt/woofs/create-distro "$R"/bin/create-distro
+ln -s ../opt/woofs/build-all "$R"/bin/build-all
 
 exit 0
