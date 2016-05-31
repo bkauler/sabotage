@@ -15,16 +15,24 @@ libvpx
 unzip
 yasm
 sqlite
+zlib
+libpng
+bzip2
 
 [build]
 patch -p1 < "$K"/seamonkey-2.30-hotfix.patch
 patch -p1 < "$K"/seamonkey-uname-wrapper.patch
 patch -p1 < "$K"/seamonkey-virtualenv.patch
+cd mozilla
+patch -p1 < "$K"/firefox-getprotobyname_r.patch
+patch -p1 < "$K"/firefox-finite.patch
+patch -p1 < "$K"/firefox38-BLOCK_SIZE.patch
+cd ..
 
 dest="$butch_install_dir"
 
 cat > mozconfig << "EOF"
-mk_add_options MOZ_MAKE_FLAGS="-j1"
+mk_add_options MOZ_MAKE_FLAGS='-j1'
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/moz-build-dir
 mk_add_options MOZ_CO_PROJECT=suite
 ac_add_options --disable-dbus
@@ -80,15 +88,105 @@ ac_add_options --enable-system-pixman
 ac_add_options --with-pthreads
 ac_add_options --with-system-bz2
 ac_add_options --without-system-jpeg
-ac_add_options --with-system-png
+ac_add_options --without-system-png
 ac_add_options --with-system-zlib
+#got these from sabotage firefox...
+#ac_add_options --disable-jemalloc
+#ac_add_options --disable-replace-malloc
+#ac_add_options --disable-wrap-malloc
+#ac_add_options --disable-profiling
+#ac_add_options --disable-shark
+#ac_add_options --disable-callgrind
+#ac_add_options --disable-vtune
+#ac_add_options --disable-elf-hack
+ac_add_options --disable-webgl
+ac_add_options --disable-webrtc
+#ac_add_options --disable-libjpeg-turbo
 EOF
+
+#from sabotage firefox...
+cd mozilla
+mkdir -p include/sys
+cat << EOF > include/sys/cdefs.h
+#ifndef __P
+#define __P(foo) foo
+#endif
+EOF
+find . -name '*.[ch]' | xargs sed -i s'@#include <sys/cdefs.h>@#define __P(x) x@g'
+# prevent overriding our own CFLAGS with built-in -O3 -g by appending
+sed -i 's@MOZ_OPTIMIZE_FLAGS=@MOZ_OPTIMIZE_FLAGS= #@g' configure
+sed -i 's@MOZ_PGO_OPTIMIZE_FLAGS=@MOZ_PGO_OPTIMIZE_FLAGS= #@g' configure
+sed -i 's@MOZ_DEBUG_FLAGS=@MOZ_DEBUG_FLAGS= #@g' configure
+sed -i 's@HOST_OPTIMIZE_FLAGS=@HOST_OPTIMIZE_FLAGS= #@g' configure
+cd ..
 
 #LFS: fix for freetype 2.6+
 sed -i '/^ftglyph.h/ i ftfntfmt.h' mozilla/config/system-headers
 
+#from: https://github.com/metachris/RPIO/issues/40
+sed -i -e 's%caddr_t%void *%' mozilla/python/psutil/psutil/_psutil_linux.c
+sed -i -e 's%caddr_t%void *%' mozilla/python/psutil/psutil/_psutil_posix.c
+
+#annoying, although i disabled crashreporter, it still gets built. has problems...
+#from: https://github.com/gperftools/gperftools/issues/693
+sed -i 's%__off64_t%off64_t%' mozilla/toolkit/crashreporter/google-breakpad/src/third_party/lss/linux_syscall_support.h
+#header path wrong...
+sed -i -e 's%<a.out.h>%<linux/a.out.h>%' mozilla/toolkit/crashreporter/google-breakpad/src/common/stabs_reader.h
+#compiles for an hour, then fails again...
+#from: https://bugs.chromium.org/p/google-breakpad/issues/detail?id=631
+cat> mozilla/include/stab.h <<'EOFMKR'
+#undef N_UNDF
+#define N_UNDF 0x0
+#define N_FUN 0x24
+#define N_SLINE 0x44
+#define N_SO 0x64
+#define N_LSYM 0x80
+#define N_BINCL 0x82
+#define N_SOL 0x84
+EOFMKR
+patch -p1 < "$K"/seamonkey-avoid-basename.patch
+patch -p1 < "$K"/seamonkey-conflict-dirent.patch
+patch -p1 < "$K"/seamonkey-elf-core.patch
+patch -p1 < "$K"/seamonkey-fpstate.patch
+patch -p1 < "$K"/seamonkey-sys-signal.patch
+rm -f mozilla/toolkit/crashreporter/google-breakpad/src/common/android/include/sys/signal.h
+
+#20160530 even though i disabled profiling, it is still compiling...
+#from: http://stackoverflow.com/questions/30680550/c-gettid-was-not-declared-in-this-scope
+patch -p1 < "$K"/seamonkey-gettid.patch
+#here we go again...
+patch -p1 < "$K"/seamonkey-lul-basename.patch
+patch -p1 < "$K"/seamonkey-profiler-gettid.patch
+
+#20160530 gee, almost there...
+#from: http://dev.alpinelinux.org/irclogs/%23alpine-linux-2015-04.log
+cp -f "$R"/include/linux/sysctl.h  mozilla/include/sys/
+#oh no, the source code has "#include_next <sys/sysctl.h>". furthermore, that source is
+#generated during compiling. i think, just put another copy here...
+SYSFLG=0
+if [ ! -e "$R"/include/sys/sysctl.h ];then
+ cp -f "$R"/include/linux/sysctl.h  "$R"/include/sys/
+ SYSFLG=1
+fi
+
+#from: http://www.linuxquestions.org/questions/linux-desktop-74/firefox-21-0-a-4175461888/
+export SHELL=/bin/bash
+
 mkdir -vp mozilla/moz-build-dir
 
-make -f client.mk
+#adapted from sabotage firefox...
+reqldf="-Wl,--no-keep-memory -Wl,-rpath-link=$butch_root_dir$butch_prefix/lib"
+allflags="-D_GNU_SOURCE $optcflags -I$PWD/mozilla/include $optldflags $reqldf"
+# on arm binutils 2.24 assertion failure is triggered due to some of the cflags
+# in the default butch config. see issue #186
+[ "$A" = arm ] && \
+allflags="-D_GNU_SOURCE -I$PWD/include -Os -g0 -fno-unwind-tables \
+-fno-asynchronous-unwind-tables -Wa,--noexecstack $reqldf"
+
+CFLAGS="$allflags" \
+CXXFLAGS="$allflags" \
+  make -f client.mk
 
 make -f client.mk install
+
+[ $SYSFLG -eq 1 ] && rm -f "$R"/include/sys/sysctl.h
