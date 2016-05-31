@@ -25,7 +25,7 @@ make install DESTDIR="$butch_install_dir"
 dest="$butch_install_dir""$butch_prefix"
 
 # generate a musl-gcc wrapper that is aware of our directory layout...
-if butch_do_custom_destdir ; then
+if $butch_do_custom_destdir ; then
 cat << EOF > "$dest"/bin/musl-gcc
 #!/bin/sh
 self=\`readlink -f "\$0"\`
