@@ -91,18 +91,20 @@ ac_add_options --without-system-jpeg
 ac_add_options --without-system-png
 ac_add_options --with-system-zlib
 #got these from sabotage firefox...
-#ac_add_options --disable-jemalloc
-#ac_add_options --disable-replace-malloc
-#ac_add_options --disable-wrap-malloc
-#ac_add_options --disable-profiling
-#ac_add_options --disable-shark
-#ac_add_options --disable-callgrind
-#ac_add_options --disable-vtune
-#ac_add_options --disable-elf-hack
+ac_add_options --disable-jemalloc
+ac_add_options --disable-replace-malloc
+ac_add_options --disable-wrap-malloc
+ac_add_options --disable-profiling
+ac_add_options --disable-shark
+ac_add_options --disable-callgrind
+ac_add_options --disable-vtune
+ac_add_options --disable-elf-hack
 ac_add_options --disable-webgl
 ac_add_options --disable-webrtc
 #ac_add_options --disable-libjpeg-turbo
 EOF
+
+sed -i '/^#/d' mozconfig
 
 #from sabotage firefox...
 cd mozilla
@@ -168,6 +170,11 @@ if [ ! -e "$R"/include/sys/sysctl.h ];then
  cp -f "$R"/include/linux/sysctl.h  "$R"/include/sys/
  SYSFLG=1
 fi
+
+#20160601 thanks to rofl0r:
+patch -p1 < "$K"/seamonkey-mallinfo.patch
+#another hairy one...
+patch -p1 < "$K"/seamonkey-siginfo_t.patch
 
 #from: http://www.linuxquestions.org/questions/linux-desktop-74/firefox-21-0-a-4175461888/
 export SHELL=/bin/bash
